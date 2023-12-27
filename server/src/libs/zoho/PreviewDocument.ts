@@ -13,9 +13,11 @@ const V1Operations =
 
 class PreviewDocument {
   static async execute() {
+    console.log('PREVIEW DOCUMENT: vvvvvvvvvvvv');
+
     try {
-      var sdkOperations = new V1Operations();
-      var previewParameters = new PreviewParameters();
+      const sdkOperations = new V1Operations();
+      const previewParameters = new PreviewParameters();
 
       previewParameters.setUrl(
         'https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx',
@@ -29,20 +31,20 @@ class PreviewDocument {
 
       // previewParameters.setDocument(streamWrapper);
 
-      var previewDocumentInfo = new PreviewDocumentInfo();
+      const previewDocumentInfo = new PreviewDocumentInfo();
 
       //Time value used to generate unique document everytime. You can replace based on your application.
       previewDocumentInfo.setDocumentName('Graphic-Design-Proposal.docx');
 
       previewParameters.setDocumentInfo(previewDocumentInfo);
 
-      var permissions = new Map();
+      const permissions = new Map();
 
-      permissions.set('document.print', false);
+      permissions.set('document.print', true);
 
       previewParameters.setPermissions(permissions);
 
-      var responseObject =
+      const responseObject =
         await sdkOperations.createDocumentPreview(previewParameters);
 
       if (responseObject != null) {
@@ -93,6 +95,8 @@ class PreviewDocument {
       }
     } catch (error) {
       console.log('\nException while running sample code', error);
+    } finally {
+      console.log('PREVIEW DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }
