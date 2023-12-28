@@ -1,5 +1,6 @@
-// import * as fs from 'fs';
-// import { StreamWrapper } from 'zoi-nodejs-sdk/utils/util/stream_wrapper';
+import * as fs from 'fs';
+const StreamWrapper =
+  require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
 const PreviewResponse =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/preview_response').PreviewResponse;
 const PreviewParameters =
@@ -12,29 +13,30 @@ const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
 class PreviewDocument {
-  static async execute() {
+  static async execute({ filename }: { filename: string }) {
     console.log('PREVIEW DOCUMENT: vvvvvvvvvvvv');
 
     try {
       const sdkOperations = new V1Operations();
       const previewParameters = new PreviewParameters();
 
-      previewParameters.setUrl(
-        'https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx',
-      );
+      // previewParameters.setUrl(
+      //   'https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx',
+      // );
 
       // var fileName = "Graphic-Design-Proposal.docx";
-      // var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
-      // var fileStream = fs.readFileSync(filePath);
-      // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath)
-      // var streamWrapper = new StreamWrapper(null, null, filePath)
+      const filePath = process.env.DOCUMENT_FOLDER + filename;
+      // TODO: handle error
+      const fileStream = fs.readFileSync(filePath);
+      const streamWrapper = new StreamWrapper(filename, fileStream, filePath);
+      // const streamWrapper = new StreamWrapper(null, null, filePath);
 
-      // previewParameters.setDocument(streamWrapper);
+      previewParameters.setDocument(streamWrapper);
 
       const previewDocumentInfo = new PreviewDocumentInfo();
 
       //Time value used to generate unique document everytime. You can replace based on your application.
-      previewDocumentInfo.setDocumentName('Graphic-Design-Proposal.docx');
+      previewDocumentInfo.setDocumentName(filename);
 
       previewParameters.setDocumentInfo(previewDocumentInfo);
 

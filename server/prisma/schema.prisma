@@ -31,6 +31,7 @@ model Document {
 
 model ZohoSession {
   id                            Int                @default(autoincrement()) @id
+  filename                      String?
   zoho_document_id              String?
   document                      Document           @relation(fields: [document_id], references: [id])
   document_id                   Int

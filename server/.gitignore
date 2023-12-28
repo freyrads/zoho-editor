@@ -1,3 +1,4 @@
+docs/
 prisma/dev.db*
 .env
 

@@ -11,16 +11,33 @@ interface IGetPreviewResponse {
 
 interface IGetCreateResponse {}
 
+const previewCache = new Map<string, IGetPreviewResponse>();
+
 @Controller('zoho')
 export class ZohoController {
   // preview endpoint
   @Get('preview')
   async getPreview(
     @Param('filename') filename?: string,
-    @Param('zoho_doc_id') zoho_doc_id?: string,
   ): Promise<IGetPreviewResponse> {
-    const res = await PreviewDocument.execute();
+    console.log({ filename });
+
+    if (!filename || !/^[a-zA-Z0-9-_ ]+\.docx$/.test(filename))
+      throw new Error('Invalid filename');
+
+    const cached = previewCache.get(filename);
+
+    if (cached) {
+      return cached;
+    }
+
+    // find from db first
+
+    // if not in db, create new zoho session
+    const res = await PreviewDocument.execute({ filename });
     console.log({ res });
+
+    // save session?
 
     return res;
   }
