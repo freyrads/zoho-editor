@@ -8,12 +8,13 @@ import { useEffect, useState } from "react";
 import { inspect } from "util";
 
 interface ICreateDocumentResponse {
-  document_url: string;
-  document_id: string;
-  save_url: string;
-  session_id: string;
-  session_delete_url: string;
-  document_delete_url: string;
+  documentUrl: string;
+  documentId: string;
+  saveUrl: string;
+  sessionId: string;
+  sessionDeleteUrl: string;
+  documentDeleteUrl: string;
+  keyModified: {}; // ?
 }
 
 interface ICreateDocumentParams {
@@ -53,11 +54,11 @@ export default function Preview() {
   });
 
   useEffect(() => {
-    const { document_url } = data?.data ?? {};
+    const { documentUrl } = data?.data ?? {};
 
-    if (!document_url) return;
+    if (!documentUrl) return;
 
-    setSrc(document_url);
+    setSrc(documentUrl);
   }, [data]);
 
   console.log({ data, ...restQuery });

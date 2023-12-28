@@ -52,6 +52,9 @@ export default function PreviewFile() {
 
   console.log({ data, ...restQuery });
 
+  if (!shouldPreviewDoc)
+    return <div>No filename provided or not logged in</div>;
+
   return (
     <main className="flex min-h-screen max-h-screen min-w-screen max-w-screen overflow-hidden flex-col items-center">
       <div className="break-all">
