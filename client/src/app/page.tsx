@@ -1,6 +1,15 @@
-import Link from "next/link";
+"use client";
+
+import LinkMap from "@/components/LinkMap";
+import useLoggedInAs from "@/hooks/useLoggedInAs";
+import { getUsers } from "@/services/root";
+import { useQuery } from "@tanstack/react-query";
 
 const links = [
+  {
+    href: "/upload",
+    desc: "Upload",
+  },
   {
     href: "/preview",
     desc: "Preview",
@@ -24,18 +33,40 @@ const links = [
 ];
 
 export default function Home() {
+  const { loggedInAs, setLoggedInAs } = useLoggedInAs();
+
+  const { data, ...restQuery } = useQuery({
+    queryKey: ["get-users"],
+    queryFn: getUsers,
+  });
+
+  console.log({ data, ...restQuery });
+
+  const users = data?.data ?? [];
+
+  if (!loggedInAs) {
+    return (
+      <div className="">
+        <div>LOGIN AS USER</div>
+        <ul>
+          {users.map((u) => {
+            const { id, name } = u;
+
+            return (
+              <li key={id}>
+                <button onClick={() => setLoggedInAs(u)}>{name}</button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-screen w-screen justify-center items-center">
+    <div className="flex min-h-screen w-screen justify-center flex-col items-center gap-[20px]">
       <div className="flex gap-[12px]">
-        {links.map(({ href, desc }) => (
-          <Link
-            key={href}
-            className="border rounded-[6px] bg-white px-[12px] py-[8px] active:bg-black active:text-white hover:bg-[#ffffffa0]"
-            href={href}
-          >
-            {desc}
-          </Link>
-        ))}
+        <LinkMap links={links} />
       </div>
     </div>
   );

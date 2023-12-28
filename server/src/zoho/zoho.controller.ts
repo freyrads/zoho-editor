@@ -15,7 +15,10 @@ interface IGetCreateResponse {}
 export class ZohoController {
   // preview endpoint
   @Get('preview')
-  async getPreview(@Param() params: any): Promise<IGetPreviewResponse> {
+  async getPreview(
+    @Param('filename') filename?: string,
+    @Param('zoho_doc_id') zoho_doc_id?: string,
+  ): Promise<IGetPreviewResponse> {
     const res = await PreviewDocument.execute();
     console.log({ res });
 
@@ -23,7 +26,10 @@ export class ZohoController {
   }
 
   @Get('create')
-  async getCreate(@Param() params: any): Promise<IGetCreateResponse> {
+  async getCreate(
+    @Param('filename') filename: string,
+    @Param('user_id') user_id: string,
+  ): Promise<IGetCreateResponse> {
     const res = await CreateDocument.execute();
     console.log({ res });
 

@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                            Int                @default(autoincrement()) @id
+  name                          String             @unique
+  created_documents             Document[]
+  zoho_sessions                 ZohoSession[]
+}
+
+model Document {
+  id                            Int                @default(autoincrement()) @id
+  title                         String?
+  filename                      String             @unique
+  zoho_document_id              String?            @unique
+  author                        User               @relation(fields: [author_id], references: [id])
+  author_id                     Int
+  existing                      Boolean
+  deleted                       Boolean            @default(false)
+  zoho_sessions                 ZohoSession[]
+}
+
+model ZohoSession {
+  id                            Int                @default(autoincrement()) @id
+  zoho_document_id              String?
+  document                      Document           @relation(fields: [document_id], references: [id])
+  document_id                   Int
+  user                          User?              @relation(fields: [user_id], references: [id])
+  user_id                       Int?
+  session_data                  String             // JSON response string when creating zoho session (all type: create edit delete co_edit etc)
+  session_type                  String             // type: create edit delete co_edit etc
+  deleted                       Boolean            @default(false)
+}

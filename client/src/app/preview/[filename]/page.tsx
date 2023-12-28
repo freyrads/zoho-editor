@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { inspect } from "util";
 
-interface ICreateDocumentResponse {
+interface IGetDocumentResponse {
   previewUrl: string;
   sessionId: string;
   sessionDeleteUrl: string;
@@ -13,8 +13,8 @@ interface ICreateDocumentResponse {
   keyModified: {}; //?
 }
 
-async function createDocument(): Promise<{
-  data: ICreateDocumentResponse;
+async function getDocument(): Promise<{
+  data: IGetDocumentResponse;
 }> {
   return axios.get("http://localhost:3001/zoho/preview");
 }
@@ -23,23 +23,25 @@ export default function Preview() {
   const [previewSrc, setPreviewSrc] = useState<string>();
 
   const { data, ...restQuery } = useQuery({
-    queryKey: ["create-document"],
-    queryFn: createDocument,
+    queryKey: ["get-document"],
+    queryFn: getDocument,
   });
 
-  // useEffect(() => {
-  //   const { previewUrl } = data?.data || {};
+  useEffect(() => {
+    const { previewUrl } = data?.data ?? {};
 
-  //   if (!previewUrl) return;
+    if (!previewUrl) return;
 
-  //   setPreviewSrc(previewUrl);
-  // }, [data]);
+    setPreviewSrc(previewUrl);
+  }, [data]);
 
   console.log({ data, ...restQuery });
 
   return (
-    <main className="flex min-h-screen max-h-screen overflow-hidden flex-col items-center">
-      {inspect(data?.data) ?? "Loading..."}
+    <main className="flex min-h-screen max-h-screen min-w-screen max-w-screen overflow-hidden flex-col items-center">
+      <div className="break-all">
+        {data?.data ? inspect(data.data) : "Loading..."}
+      </div>
       <div className="flex w-[1000px]">
         <iframe
           name="preview-iframe"
