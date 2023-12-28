@@ -1,7 +1,9 @@
 "use client";
 
+import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { inspect } from "util";
 
@@ -13,18 +15,31 @@ interface IGetDocumentResponse {
   keyModified: {}; //?
 }
 
-async function getDocument(): Promise<{
-  data: IGetDocumentResponse;
-}> {
-  return axios.get("http://localhost:3001/zoho/preview");
+interface IGetDocumentParams {
+  filename: string;
 }
 
-export default function Preview() {
+async function getDocument(params: IGetDocumentParams) {
+  return axios.get<IGetDocumentResponse>("http://localhost:3001/zoho/preview", {
+    params,
+  });
+}
+
+export default function PreviewFile() {
+  const params = useParams();
+
+  const { loggedInAs, setLoggedInAs } = useLoggedInAs();
+  const userId = loggedInAs?.id;
+
   const [previewSrc, setPreviewSrc] = useState<string>();
+
+  const filename = params.filename;
+  const shouldPreviewDoc = !!filename?.length && !!userId;
 
   const { data, ...restQuery } = useQuery({
     queryKey: ["get-document"],
-    queryFn: getDocument,
+    queryFn: () => getDocument({ filename: filename as string }),
+    enabled: shouldPreviewDoc,
   });
 
   useEffect(() => {

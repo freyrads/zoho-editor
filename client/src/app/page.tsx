@@ -54,7 +54,9 @@ export default function Home() {
 
             return (
               <li key={id}>
-                <button onClick={() => setLoggedInAs(u)}>{name}</button>
+                <button className="btn-look" onClick={() => setLoggedInAs(u)}>
+                  {name}
+                </button>
               </li>
             );
           })}
@@ -64,10 +66,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen w-screen justify-center flex-col items-center gap-[20px]">
-      <div className="flex gap-[12px]">
-        <LinkMap links={links} />
-      </div>
+    <div className="flex gap-[12px]">
+      <LinkMap links={links} />
     </div>
   );
 }

@@ -17,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} flex min-h-screen w-screen justify-center flex-col items-center gap-[20px]`}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
