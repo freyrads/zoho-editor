@@ -1,35 +1,11 @@
 "use client";
 
 import useLoggedInAs from "@/hooks/useLoggedInAs";
+import { createDocument } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { inspect } from "util";
-
-interface ICreateDocumentResponse {
-  documentUrl: string;
-  documentId: string;
-  saveUrl: string;
-  sessionId: string;
-  sessionDeleteUrl: string;
-  documentDeleteUrl: string;
-  keyModified: {}; // ?
-}
-
-interface ICreateDocumentParams {
-  user_id: string;
-  filename: string;
-}
-
-async function createDocument(params: ICreateDocumentParams) {
-  return axios.get<ICreateDocumentResponse>(
-    "http://localhost:3001/zoho/create",
-    {
-      params,
-    },
-  );
-}
 
 export default function Preview() {
   const params = useParams();

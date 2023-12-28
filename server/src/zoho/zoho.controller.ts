@@ -2,14 +2,22 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
 
 interface IGetPreviewResponse {
-  preview_url: string;
-  session_id: string;
-  document_id: string;
-  session_delete_url: string;
-  document_delete_url: string;
+  previewUrl: string;
+  sessionId: string;
+  sessionDeleteUrl: string;
+  documentDeleteUrl: string;
+  keyModified: {}; //?
 }
 
-interface IGetCreateResponse {}
+interface IGetCreateResponse {
+  documentUrl: string;
+  documentId: string;
+  saveUrl: string;
+  sessionId: string;
+  sessionDeleteUrl: string;
+  documentDeleteUrl: string;
+  keyModified: {}; // ?
+}
 
 const previewCache = new Map<string, IGetPreviewResponse>();
 
@@ -37,7 +45,8 @@ export class ZohoController {
     const res = await PreviewDocument.execute({ filename });
     console.log({ res });
 
-    // save session?
+    // save session to cache and db(TODO)
+    previewCache.set(filename, res);
 
     return res;
   }

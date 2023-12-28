@@ -1,29 +1,11 @@
 "use client";
 
 import useLoggedInAs from "@/hooks/useLoggedInAs";
+import { getDocument } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { inspect } from "util";
-
-interface IGetDocumentResponse {
-  previewUrl: string;
-  sessionId: string;
-  sessionDeleteUrl: string;
-  documentDeleteUrl: string;
-  keyModified: {}; //?
-}
-
-interface IGetDocumentParams {
-  filename: string;
-}
-
-async function getDocument(params: IGetDocumentParams) {
-  return axios.get<IGetDocumentResponse>("http://localhost:3001/zoho/preview", {
-    params,
-  });
-}
 
 export default function PreviewFile() {
   const params = useParams();
