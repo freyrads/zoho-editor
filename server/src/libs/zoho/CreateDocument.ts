@@ -132,7 +132,7 @@ class CreateDocument {
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(
         // 'https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net',
-        `http://localhost:3001/zoho/${documentId}/save`,
+        `${process.env.SERVER_URL}/zoho/${documentId}/save`,
       );
 
       createDocumentParameters.setCallbackSettings(callbackSettings);
