@@ -25,6 +25,7 @@ interface ICreateDocumentParams {
   userName: string;
   documentId: string;
   userId: string;
+  filename: string;
 }
 
 class CreateDocument {
@@ -32,6 +33,7 @@ class CreateDocument {
     userName,
     documentId,
     userId,
+    filename,
   }: ICreateDocumentParams) {
     console.log('CREATE DOCUMENT: vvvvvvvvvvvv');
 
@@ -115,6 +117,8 @@ class CreateDocument {
       saveUrlParams.set('auth_token', '1234');
       saveUrlParams.set('id', '123131');
 
+      saveUrlParams.set('filename', filename);
+
       const saveUrlHeaders = new Map();
 
       saveUrlHeaders.set('header1', 'value1');
@@ -122,12 +126,13 @@ class CreateDocument {
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
       callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
-      callbackSettings.setRetries(1);
-      callbackSettings.setSaveFormat('zdoc');
+      callbackSettings.setRetries(3);
+      callbackSettings.setSaveFormat('docx');
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(
-        'https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net',
+        // 'https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net',
+        `http://localhost:3001/zoho/${documentId}/save`,
       );
 
       createDocumentParameters.setCallbackSettings(callbackSettings);

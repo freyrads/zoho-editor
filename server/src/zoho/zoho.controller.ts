@@ -1,9 +1,13 @@
 import {
+  Body,
   Controller,
   Get,
+  Headers,
   HttpException,
   HttpStatus,
   Param,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
@@ -63,6 +67,8 @@ export class ZohoController {
   @Get('create')
   async getCreate(
     @Param('user_id') user_id: string,
+    @Param('filename')
+    filename: string = `Untitled-${new Date().valueOf()}.docx`,
   ): Promise<IGetCreateResponse> {
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
@@ -83,6 +89,7 @@ export class ZohoController {
       documentId,
       userName,
       userId: String(uid),
+      filename,
     });
 
     console.log({ res });
@@ -106,4 +113,15 @@ export class ZohoController {
   // @Get('edit')
   // async getCreate(@Param() params: any): Promise<> {
   // }
+
+  @Post(':id/save')
+  async postDocumentSave(
+    @Param() params: any,
+    @Body() body: any,
+    @Query() queries: any,
+    @Headers() headers: any,
+  ) {
+    console.log('POST :id/save:');
+    console.log({ params, body, queries, headers });
+  }
 }
