@@ -126,7 +126,7 @@ export class ZohoController {
         filename: (req, file, cb) => {
           console.log({ req, file });
 
-          cb(null, `${req.body.filename}.${req.body.format}`);
+          cb(null, file.originalname);
         },
       }),
     }),
