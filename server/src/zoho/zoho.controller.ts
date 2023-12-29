@@ -99,13 +99,15 @@ export class ZohoController {
     console.log({ res });
 
     // save to db
-    // await this.appService.createZohoSession({
-    //   data: {
-    //     author_id: uid,
-    // zoho_document_id: res.documentId,
-
-    //   }
-    // });
+    await this.appService.createZohoSession({
+      data: {
+        user_id: uid,
+        zoho_document_id: res.documentId,
+        session_data: JSON.stringify(res),
+        session_type: 'create',
+        session_id: res.sessionId,
+      },
+    });
 
     return res;
   }
@@ -140,5 +142,7 @@ export class ZohoController {
   ) {
     console.log('POST :id/save:');
     console.log({ params, body, queries, headers, content });
+
+    // TODO: update/insert document entry in db
   }
 }

@@ -37,6 +37,13 @@ class CreateDocument {
   }: ICreateDocumentParams) {
     console.log('CREATE DOCUMENT: vvvvvvvvvvvv');
 
+    console.log({
+      userName,
+      documentId,
+      userId,
+      filename,
+    });
+
     try {
       const sdkOperations = new V1Operations();
       const createDocumentParameters = new CreateDocumentParameters();
@@ -45,10 +52,9 @@ class CreateDocument {
 
       //Time value used to generate unique document everytime. You can replace based on your application.
       // const documentId = '' + new Date().getTime();
-      console.log({ documentId, userName });
 
       documentInfo.setDocumentId(documentId);
-      documentInfo.setDocumentName(`New Document: ${documentId}`);
+      documentInfo.setDocumentName(filename);
 
       createDocumentParameters.setDocumentInfo(documentInfo);
 
