@@ -12,6 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
 
@@ -118,7 +119,18 @@ export class ZohoController {
   // }
 
   @Post(':id/save')
-  @UseInterceptors(FileInterceptor('content'))
+  @UseInterceptors(
+    FileInterceptor('content', {
+      storage: diskStorage({
+        destination: process.env.DOCUMENT_FOLDER,
+        filename: (req, file, cb) => {
+          console.log({ req, file });
+
+          cb(null, `${req.body.filename}.${req.body.format}`);
+        },
+      }),
+    }),
+  )
   async postDocumentSave(
     @Param() params: any,
     @Body() body: any,
