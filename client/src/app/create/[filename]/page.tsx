@@ -11,6 +11,7 @@ export default function Preview() {
   const params = useParams();
 
   const { loggedInAs, setLoggedInAs } = useLoggedInAs();
+  console.log(loggedInAs);
   const userId = loggedInAs?.id;
 
   const [src, setSrc] = useState<string>();

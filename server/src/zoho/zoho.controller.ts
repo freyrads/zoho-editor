@@ -39,7 +39,7 @@ export class ZohoController {
   // preview endpoint
   @Get('preview')
   async getPreview(
-    @Param('filename') filename?: string,
+    @Query('filename') filename?: string,
   ): Promise<IGetPreviewResponse> {
     console.log({ filename });
 
@@ -66,8 +66,8 @@ export class ZohoController {
 
   @Get('create')
   async getCreate(
-    @Param('user_id') user_id: string,
-    @Param('filename')
+    @Query('user_id') user_id: string,
+    @Query('filename')
     filename: string = `Untitled-${new Date().valueOf()}.docx`,
   ): Promise<IGetCreateResponse> {
     const uid = user_id?.length ? parseInt(user_id) : NaN;

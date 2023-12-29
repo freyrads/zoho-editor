@@ -28,17 +28,15 @@ const removeSetter: typeof addSetter = (setter) => {
 };
 
 export default function useLoggedInAs() {
-  const [loggedInAs, setLoggedInAs] = useState<IGetUsersResponse | undefined>(
-    currentValue,
-  );
+  const [val, setVal] = useState<IGetUsersResponse | undefined>(currentValue);
 
   useEffect(() => {
-    addSetter(setLoggedInAs);
+    addSetter(setVal);
 
     return () => {
-      removeSetter(setLoggedInAs);
+      removeSetter(setVal);
     };
   }, []);
 
-  return { loggedInAs, setLoggedInAs: setSetLoggedInAs };
+  return { loggedInAs: val, setLoggedInAs: setSetLoggedInAs };
 }
