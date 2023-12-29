@@ -8,7 +8,10 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
 
@@ -115,13 +118,15 @@ export class ZohoController {
   // }
 
   @Post(':id/save')
+  @UseInterceptors(FileInterceptor('content'))
   async postDocumentSave(
     @Param() params: any,
     @Body() body: any,
     @Query() queries: any,
     @Headers() headers: any,
+    @UploadedFile() content: Express.Multer.File,
   ) {
     console.log('POST :id/save:');
-    console.log({ params, body, queries, headers });
+    console.log({ params, body, queries, headers, content });
   }
 }

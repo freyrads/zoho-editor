@@ -117,8 +117,6 @@ class CreateDocument {
       saveUrlParams.set('auth_token', '1234');
       saveUrlParams.set('id', '123131');
 
-      saveUrlParams.set('filename', filename);
-
       const saveUrlHeaders = new Map();
 
       saveUrlHeaders.set('header1', 'value1');
