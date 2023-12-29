@@ -39,6 +39,7 @@ model ZohoSession {
   document_id                   Int?
   user                          User               @relation(fields: [user_id], references: [id])
   user_id                       Int
+  zoho_document_id              String
   session_data                  String             // JSON response string when creating zoho session (all type: create edit delete co_edit etc)
   session_type                  String             // type: create edit delete co_edit etc
   session_id                    String             @unique
