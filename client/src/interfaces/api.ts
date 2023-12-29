@@ -28,5 +28,6 @@ export interface ICreateDocumentResponse {
 
 export interface ICreateDocumentParams {
   user_id: string;
-  filename: string;
+  // unused
+  filename?: string;
 }

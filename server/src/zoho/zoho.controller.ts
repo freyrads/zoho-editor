@@ -1,4 +1,11 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+} from '@nestjs/common';
+import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
 
 interface IGetPreviewResponse {
@@ -23,6 +30,8 @@ const previewCache = new Map<string, IGetPreviewResponse>();
 
 @Controller('zoho')
 export class ZohoController {
+  constructor(private readonly appService: AppService) {}
+
   // preview endpoint
   @Get('preview')
   async getPreview(
@@ -31,7 +40,7 @@ export class ZohoController {
     console.log({ filename });
 
     if (!filename || !/^[a-zA-Z0-9-_ ]+\.docx$/.test(filename))
-      throw new Error('Invalid filename');
+      throw new HttpException('Invalid filename', HttpStatus.BAD_REQUEST);
 
     const cached = previewCache.get(filename);
 
@@ -53,11 +62,39 @@ export class ZohoController {
 
   @Get('create')
   async getCreate(
-    @Param('filename') filename: string,
     @Param('user_id') user_id: string,
   ): Promise<IGetCreateResponse> {
-    const res = await CreateDocument.execute();
+    const uid = user_id?.length ? parseInt(user_id) : NaN;
+    if (Number.isNaN(uid)) {
+      console.error({ user_id });
+      throw new HttpException('Invalid user_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.appService.getUserById(uid);
+    if (!user) {
+      console.error({ user });
+      throw new HttpException('Unknown user_id', HttpStatus.UNAUTHORIZED);
+    }
+
+    const userName = user.name;
+    const documentId = '' + new Date().getTime();
+
+    const res: IGetCreateResponse = await CreateDocument.execute({
+      documentId,
+      userName,
+      userId: String(uid),
+    });
+
     console.log({ res });
+
+    // save to db
+    // await this.appService.createZohoSession({
+    //   data: {
+    //     author_id: uid,
+    // zoho_document_id: res.documentId,
+
+    //   }
+    // });
 
     return res;
   }

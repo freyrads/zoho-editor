@@ -21,22 +21,18 @@ const InvaildConfigurationException =
 const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
-function createRandomUserName() {
-  const tokens =
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-
-  let userName = '';
-
-  const randomLength = Math.floor(Math.random() * 15) + 6;
-  for (let i = 0; i < randomLength; i++) {
-    userName += tokens[Math.floor(Math.random() * tokens.length)];
-  }
-
-  return userName;
+interface ICreateDocumentParams {
+  userName: string;
+  documentId: string;
+  userId: string;
 }
 
 class CreateDocument {
-  static async execute() {
+  static async execute({
+    userName,
+    documentId,
+    userId,
+  }: ICreateDocumentParams) {
     console.log('CREATE DOCUMENT: vvvvvvvvvvvv');
 
     try {
@@ -46,8 +42,8 @@ class CreateDocument {
       const documentInfo = new DocumentInfo();
 
       //Time value used to generate unique document everytime. You can replace based on your application.
-      const documentId = '' + new Date().getTime();
-      console.log({ documentId });
+      // const documentId = '' + new Date().getTime();
+      console.log({ documentId, userName });
 
       documentInfo.setDocumentId(documentId);
       documentInfo.setDocumentName(`New Document: ${documentId}`);
@@ -56,11 +52,9 @@ class CreateDocument {
 
       const userInfo = new UserInfo();
 
-      const randomUserName = createRandomUserName();
-      console.log({ randomUserName });
-
-      userInfo.setUserId(randomUserName);
-      userInfo.setDisplayName(randomUserName);
+      // TODO
+      userInfo.setUserId(userId);
+      userInfo.setDisplayName(userName);
 
       createDocumentParameters.setUserInfo(userInfo);
 
@@ -73,14 +67,14 @@ class CreateDocument {
 
       const documentDefaults = new DocumentDefaults();
 
-      documentDefaults.setFontSize(12);
-      documentDefaults.setPaperSize('A4');
-      documentDefaults.setFontName('Arial');
-      documentDefaults.setTrackChanges('enabled');
-      documentDefaults.setOrientation('landscape');
+      documentDefaults.setFontSize(12); // default 12
+      documentDefaults.setPaperSize('A4'); // default Letter
+      documentDefaults.setFontName('Arial'); // default Arial
+      documentDefaults.setTrackChanges('enabled'); // default disabled
+      // documentDefaults.setOrientation('landscape'); // default portrait
 
       documentDefaults.setMargin(margin);
-      documentDefaults.setLanguage('ta');
+      documentDefaults.setLanguage('en');
 
       createDocumentParameters.setDocumentDefaults(documentDefaults);
 
