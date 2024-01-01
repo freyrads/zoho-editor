@@ -56,7 +56,7 @@ export class ZohoController {
       return cached;
     }
 
-    // find from db first
+    // TODO: find from db first if document already has session exist
 
     // if not in db, create new zoho session
     const res = await PreviewDocument.execute({ filename });
@@ -142,7 +142,60 @@ export class ZohoController {
   ) {
     console.log('POST :id/save:');
     console.log({ params, body, queries, headers, content });
+    /*
+POST :id/save:                                                                                  
+{                                       
+  params: { id: '1703822085550' },                                                              
+  body: [Object: null prototype] {                                                                                                                                                              
+    filename: 'test2',                                                                          
+    id: '123131',                                                                               
+    auth_token: '1234'                
+    TODO: add actual info fields here
+  },                                                                                            
+  queries: {},                              
+  headers: {                                                                                    
+    'req-mi-chain': '-1407389072:8080',
+    header2: 'value2',                                                                          
+    header1: 'value1',                                                                                                                                                                          
+    'content-type': 'multipart/form-data; charset=UTF-8; boundary=MultiPartFileBoundary18cb3d7987d',                                                                                            
+    'user-agent': 'Java/11.0.20',                                                                                                                                                               
+    accept: 'text/html, image/gif, image/jpeg, *; q=.2, *\/*; q=.2',                             
+    'content-length': '101709',                                                                 
+    host: '149.102.255.134',                                                                    
+    'x-forwarded-for': 'unknown',
+    'cache-control': 'max-age=259200',
+    connection: 'keep-alive'
+  },
+  content: {
+    fieldname: 'content',
+    originalname: 'New Document: 1703822085550.docx',
+    encoding: '7bit',
+    mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    destination: './docs/',
+    filename: 'New Document: 1703822085550.docx',
+    path: 'docs/New Document: 1703822085550.docx',
+    size: 101173
+  }
+}
+    */
+
+    const existingDoc = await this.appService.getDocumentByZohoDocId(params.id);
+
+    console.log({ existingDoc });
 
     // TODO: update/insert document entry in db
+    if (!existingDoc) {
+      const createdDoc = await this.appService.createDocument({
+        data: {
+          zoho_document_id: params.id,
+          filename: content.filename,
+          existing: body.existing,
+          author_id: body.author_id,
+        },
+      });
+
+      console.log({ createdDoc });
+    }
+    // else update?
   }
 }

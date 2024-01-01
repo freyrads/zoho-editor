@@ -31,4 +31,36 @@ export class AppService extends PrismaClient implements OnModuleInit {
   ) {
     return this.zohoSession.create(params);
   }
+
+  async getDocuments() {
+    return this.document.findMany();
+  }
+
+  async getZohoSessions() {
+    return this.zohoSession.findMany();
+  }
+
+  async getDocumentById(id: number) {
+    return this.document.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async getDocumentByZohoDocId(zoho_document_id: string) {
+    return this.document.findUnique({
+      where: {
+        zoho_document_id,
+      },
+    });
+  }
+
+  async getDocumentByUser(user_id: number) {
+    return this.document.findMany({
+      where: {
+        author_id: user_id,
+      },
+    });
+  }
 }

@@ -31,3 +31,9 @@ export interface ICreateDocumentParams {
   // unused
   filename?: string;
 }
+
+export type IGetAllDocumentResponse = any;
+// export interface IGetAllDocumentResponse {}
+
+export type IGetAllSessionResponse = any;
+// export interface IGetAllSessionResponse {}
