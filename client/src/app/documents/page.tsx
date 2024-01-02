@@ -24,7 +24,11 @@ export default function Documents() {
     router.push("/create");
   };
 
-  const handlePreview = (doc: any) => {};
+  const handlePreview = (doc: any) => {
+    console.log({ doc });
+
+    router.push(`/preview/${doc.filename}`);
+  };
 
   const handleEdit = (doc: any) => {};
 

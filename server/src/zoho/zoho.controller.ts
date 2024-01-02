@@ -47,7 +47,7 @@ export class ZohoController {
   ): Promise<IGetPreviewResponse> {
     console.log({ filename });
 
-    if (!filename || !/^[a-zA-Z0-9-_ ]+\.docx$/.test(filename))
+    if (!filename || !/^[a-zA-Z0-9-_ %]+\.docx$/.test(filename))
       throw new HttpException('Invalid filename', HttpStatus.BAD_REQUEST);
 
     const cached = previewCache.get(filename);
