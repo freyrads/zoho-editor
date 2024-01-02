@@ -63,4 +63,15 @@ export class AppService extends PrismaClient implements OnModuleInit {
       },
     });
   }
+
+  async updateZohoDocId(id: number, zoho_document_id: string) {
+    return this.document.update({
+      where: {
+        id,
+      },
+      data: {
+        zoho_document_id,
+      },
+    });
+  }
 }

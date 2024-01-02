@@ -1,5 +1,6 @@
-const Margin =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin').Margin;
+const fs = require('fs');
+const StreamWrapper =
+  require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
 const UserInfo =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info').UserInfo;
 const UiOptions =
@@ -28,14 +29,14 @@ interface ICreateDocumentParams {
   filename: string;
 }
 
-class CreateDocument {
+class EditDocument {
   static async execute({
     userName,
     documentId,
     userId,
     filename,
   }: ICreateDocumentParams) {
-    console.log('CREATE DOCUMENT: vvvvvvvvvvvv');
+    console.log('EDIT DOCUMENT: vvvvvvvvvvvv');
 
     console.log({
       userName,
@@ -47,6 +48,13 @@ class CreateDocument {
     try {
       const sdkOperations = new V1Operations();
       const createDocumentParameters = new CreateDocumentParameters();
+
+      const filePath = process.env.DOCUMENT_FOLDER + filename;
+      // TODO: handle error
+      const fileStream = fs.readFileSync(filePath);
+      const streamWrapper = new StreamWrapper(filename, fileStream, filePath);
+
+      createDocumentParameters.setDocument(streamWrapper);
 
       const documentInfo = new DocumentInfo();
 
@@ -62,22 +70,9 @@ class CreateDocument {
 
       createDocumentParameters.setUserInfo(userInfo);
 
-      const margin = new Margin();
-
-      margin.setTop('2in');
-      margin.setBottom('2in');
-      margin.setLeft('2in');
-      margin.setRight('2in');
-
       const documentDefaults = new DocumentDefaults();
 
-      documentDefaults.setFontSize(12); // default 12
-      documentDefaults.setPaperSize('A4'); // default Letter
-      documentDefaults.setFontName('Arial'); // default Arial
       documentDefaults.setTrackChanges('enabled'); // default disabled
-      // documentDefaults.setOrientation('landscape'); // default portrait
-
-      documentDefaults.setMargin(margin);
       documentDefaults.setLanguage('en');
 
       createDocumentParameters.setDocumentDefaults(documentDefaults);
@@ -108,7 +103,7 @@ class CreateDocument {
       permissions.set('review.changes.resolve', true);
       permissions.set('collab.chat', true);
       permissions.set('document.pausecollaboration', false);
-      permissions.set('document.fill', true);
+      permissions.set('document.fill', false);
 
       createDocumentParameters.setPermissions(permissions);
 
@@ -142,14 +137,14 @@ class CreateDocument {
       console.log({ responseObject });
 
       if (responseObject != null) {
-        //Get the status code from response
-        console.log('\nStatus Code: ' + responseObject.statusCode);
+        // Get the status code from response
+        console.log('Status Code: ' + responseObject.statusCode);
 
-        //Get the api response object from responseObject
+        // Get the api response object from responseObject
         let writerResponseObject = responseObject.object;
 
         if (writerResponseObject != null) {
-          //Check if expected CreateDocumentResponse instance is received
+          // Check if expected CreateDocumentResponse instance is received
           if (writerResponseObject instanceof CreateDocumentResponse) {
             console.log(
               '\nDocument ID - ' + writerResponseObject.getDocumentId(),
@@ -189,10 +184,10 @@ class CreateDocument {
     } catch (error) {
       console.log('\nException while running sample code', error);
     } finally {
-      console.log('CREATE DOCUMENT: ^^^^^^^^^^^^');
+      console.log('EDIT DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }
 
-// CreateDocument.execute();
-export default CreateDocument;
+// EditDocument.execute();
+export default EditDocument;

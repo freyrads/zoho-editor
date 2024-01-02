@@ -1,5 +1,3 @@
-const Margin =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin').Margin;
 const UserInfo =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info').UserInfo;
 const UiOptions =
@@ -21,125 +19,76 @@ const InvaildConfigurationException =
 const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
-interface ICreateDocumentParams {
-  userName: string;
-  documentId: string;
-  userId: string;
-  filename: string;
-}
-
-class CreateDocument {
-  static async execute({
-    userName,
-    documentId,
-    userId,
-    filename,
-  }: ICreateDocumentParams) {
-    console.log('CREATE DOCUMENT: vvvvvvvvvvvv');
-
-    console.log({
-      userName,
-      documentId,
-      userId,
-      filename,
-    });
-
+class CoEditDocument {
+  // TODO: adjustment required
+  static async execute() {
     try {
-      const sdkOperations = new V1Operations();
-      const createDocumentParameters = new CreateDocumentParameters();
+      var sdkOperations = new V1Operations();
+      var createDocumentParameters = new CreateDocumentParameters();
 
-      const documentInfo = new DocumentInfo();
+      var documentInfo = new DocumentInfo();
 
-      documentInfo.setDocumentId(documentId);
-      documentInfo.setDocumentName(filename);
+      //To collaborate in existing document, providing the document id (e.g: 1000) alone is enough.
+      //Note: Make sure the document already exist in Zoho server (for below given document id).
+      //Even if the document is added to this request, if document exist in Zoho server for given document id, then session will be create for the document which already exist in Zoho.
+      documentInfo.setDocumentId('1000');
 
       createDocumentParameters.setDocumentInfo(documentInfo);
 
-      const userInfo = new UserInfo();
+      var userInfo = new UserInfo();
 
-      userInfo.setUserId(userId);
-      userInfo.setDisplayName(userName);
+      userInfo.setUserId('1000');
+      userInfo.setDisplayName('Amelia');
 
       createDocumentParameters.setUserInfo(userInfo);
 
-      const margin = new Margin();
+      var documentDefaults = new DocumentDefaults();
 
-      margin.setTop('2in');
-      margin.setBottom('2in');
-      margin.setLeft('2in');
-      margin.setRight('2in');
-
-      const documentDefaults = new DocumentDefaults();
-
-      documentDefaults.setFontSize(12); // default 12
-      documentDefaults.setPaperSize('A4'); // default Letter
-      documentDefaults.setFontName('Arial'); // default Arial
-      documentDefaults.setTrackChanges('enabled'); // default disabled
-      // documentDefaults.setOrientation('landscape'); // default portrait
-
-      documentDefaults.setMargin(margin);
-      documentDefaults.setLanguage('en');
+      documentDefaults.setTrackChanges('enabled');
 
       createDocumentParameters.setDocumentDefaults(documentDefaults);
 
-      const editorSettings = new EditorSettings();
-
-      editorSettings.setUnit('mm');
-      editorSettings.setLanguage('en');
-      editorSettings.setView('pageview');
-
-      createDocumentParameters.setEditorSettings(editorSettings);
-
-      const uiOptions = new UiOptions();
+      var uiOptions = new UiOptions();
 
       uiOptions.setDarkMode('show');
       uiOptions.setFileMenu('show');
       uiOptions.setSaveButton('show');
       uiOptions.setChatPanel('show');
-
       createDocumentParameters.setUiOptions(uiOptions);
 
-      const permissions = new Map();
+      var permissions = new Map();
 
-      permissions.set('document.export', true);
-      permissions.set('document.print', true);
+      permissions.set('collab.chat', false);
       permissions.set('document.edit', true);
-      permissions.set('review.comment', true);
-      permissions.set('review.changes.resolve', true);
-      permissions.set('collab.chat', true);
+      permissions.set('document.fill', false);
+      permissions.set('document.export', true);
+      permissions.set('document.print', false);
+      permissions.set('review.comment', false);
+      permissions.set('review.changes.resolve', false);
       permissions.set('document.pausecollaboration', false);
-      permissions.set('document.fill', true);
 
       createDocumentParameters.setPermissions(permissions);
 
-      const callbackSettings = new CallbackSettings();
-      const saveUrlParams = new Map();
+      var callbackSettings = new CallbackSettings();
+      var saveUrlParams = new Map();
 
-      saveUrlParams.set('author_id', userId);
-
-      // const saveUrlHeaders = new Map();
-
-      // saveUrlHeaders.set('header1', 'value1');
-      // saveUrlHeaders.set('header2', 'value2');
+      saveUrlParams.set('auth_token', '1234');
+      saveUrlParams.set('id', '123131');
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
-      // callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
-      callbackSettings.setRetries(3);
+      callbackSettings.setRetries(1);
       callbackSettings.setSaveFormat('docx');
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(
-        // 'https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net',
-        `${process.env.SERVER_URL}/zoho/${documentId}/save`,
+        'https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157123434d4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286',
       );
 
       createDocumentParameters.setCallbackSettings(callbackSettings);
 
-      const responseObject = await sdkOperations.createDocument(
+      var responseObject = await sdkOperations.createDocument(
         createDocumentParameters,
       );
-
-      console.log({ responseObject });
 
       if (responseObject != null) {
         //Get the status code from response
@@ -183,16 +132,12 @@ class CreateDocument {
             console.log('\nRequest not completed successfullly');
           }
         }
-
-        return writerResponseObject;
       }
     } catch (error) {
       console.log('\nException while running sample code', error);
-    } finally {
-      console.log('CREATE DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }
 
-// CreateDocument.execute();
-export default CreateDocument;
+// CoEditDocument.execute();
+export default CoEditDocument;

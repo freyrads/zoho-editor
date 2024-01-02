@@ -15,6 +15,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
+import EditDocument from 'src/libs/zoho/EditDocument';
+
+function createNewZohoDocId() {
+  return '' + new Date().getTime();
+}
 
 interface IGetPreviewResponse {
   previewUrl: string;
@@ -43,14 +48,9 @@ export class ZohoController {
   // preview endpoint
   @Get('preview')
   async getPreview(
-    @Query('filename') filename?: string,
+    @Query('document_id') document_id: string,
   ): Promise<IGetPreviewResponse> {
-    console.log({ filename });
-
-    if (!filename || !/^[a-zA-Z0-9-_ %]+\.docx$/.test(filename))
-      throw new HttpException('Invalid filename', HttpStatus.BAD_REQUEST);
-
-    const cached = previewCache.get(filename);
+    const cached = previewCache.get(document_id);
 
     if (cached) {
       return cached;
@@ -59,11 +59,11 @@ export class ZohoController {
     // TODO: find from db first if document already has session exist
 
     // if not in db, create new zoho session
-    const res = await PreviewDocument.execute({ filename });
+    const res = await PreviewDocument.execute({ filename: savedDoc.filename });
     console.log({ res });
 
     // save session to cache and db(TODO)
-    previewCache.set(filename, res);
+    previewCache.set(document_id, res);
 
     return res;
   }
@@ -87,12 +87,12 @@ export class ZohoController {
     }
 
     const userName = user.name;
-    const documentId = '' + new Date().getTime();
+    const documentId = createNewZohoDocId();
 
     const res: IGetCreateResponse = await CreateDocument.execute({
       documentId,
       userName,
-      userId: String(uid),
+      userId: String(user.id),
       filename,
     });
 
@@ -112,13 +112,71 @@ export class ZohoController {
     return res;
   }
 
-  // @Get('delete')
-  // async getCreate(@Param() params: any): Promise<> {
-  // }
-
   // @Get('edit')
   // async getCreate(@Param() params: any): Promise<> {
   // }
+
+  // preview endpoint
+  @Get('edit')
+  async getEdit(
+    @Query('user_id') user_id: string,
+    @Query('document_id')
+    document_id: string,
+  ): Promise<IGetPreviewResponse> {
+    const uid = user_id?.length ? parseInt(user_id) : NaN;
+    if (Number.isNaN(uid)) {
+      console.error({ user_id });
+      throw new HttpException('Invalid user_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const docId = document_id?.length ? parseInt(document_id) : NaN;
+    if (Number.isNaN(docId)) {
+      console.error({ document_id });
+      throw new HttpException('Invalid document_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.appService.getUserById(uid);
+    if (!user) {
+      console.error({ user });
+      throw new HttpException('Unknown user_id', HttpStatus.UNAUTHORIZED);
+    }
+
+    const savedDoc = await this.appService.getDocumentById(docId);
+
+    if (!savedDoc)
+      throw new HttpException('Unknown Document', HttpStatus.BAD_REQUEST);
+
+    // const cached = previewCache.get(filename);
+
+    // if (cached) {
+    //   return cached;
+    // }
+
+    // TODO: find from db first if document already has session exist
+
+    if (!savedDoc.zoho_document_id) {
+      savedDoc.zoho_document_id = createNewZohoDocId();
+
+      await this.appService.updateZohoDocId(
+        savedDoc.id,
+        savedDoc.zoho_document_id,
+      );
+    }
+
+    // if not in db, create new zoho session
+    const res = await EditDocument.execute({
+      filename: savedDoc.filename,
+      documentId: savedDoc.zoho_document_id,
+      userId: String(user.id),
+      userName: user.name,
+    });
+    console.log({ res });
+
+    // save session to cache and db(TODO)
+    // previewCache.set(filename, res);
+
+    return res;
+  }
 
   @Post(':id/save')
   @UseInterceptors(
