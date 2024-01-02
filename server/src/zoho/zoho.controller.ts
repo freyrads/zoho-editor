@@ -103,7 +103,11 @@ export class ZohoController {
       throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
     }
 
-    console.log({ filename });
+    const oriFname = filename;
+
+    filename = decodeURIComponent(filename);
+
+    console.log({ filename: oriFname, sanitizedFilename: filename });
 
     if (filename.startsWith('Untitled-')) {
       return response.redirect(`/create/${filename}`);

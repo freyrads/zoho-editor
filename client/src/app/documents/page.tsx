@@ -27,7 +27,7 @@ export default function Documents() {
   const handlePreview = (doc: any) => {
     console.log({ doc });
 
-    router.push(`/preview/${doc.filename}`);
+    router.push(`/preview/${doc.id}`);
   };
 
   const handleEdit = (doc: any) => {};

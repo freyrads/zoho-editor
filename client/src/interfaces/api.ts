@@ -13,7 +13,7 @@ export interface IGetDocumentResponse {
 }
 
 export interface IGetDocumentParams {
-  filename: string;
+  document_id: string;
 }
 
 export interface ICreateDocumentResponse {
