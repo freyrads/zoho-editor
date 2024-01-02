@@ -19,7 +19,7 @@ export default function PreviewFile() {
   const shouldPreviewDoc = !!filename?.length && !!userId;
 
   const { data, ...restQuery } = useQuery({
-    queryKey: ["get-document"],
+    queryKey: ["get-document", filename],
     queryFn: () => getDocument({ document_id: filename as string }),
     enabled: shouldPreviewDoc,
   });

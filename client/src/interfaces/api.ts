@@ -36,3 +36,10 @@ export type IGetAllDocumentResponse = any;
 
 export type IGetAllSessionResponse = any;
 // export interface IGetAllSessionResponse {}
+
+export interface IEditDocumentParams {
+  user_id: string;
+  document_id?: string;
+}
+
+export type IEditDocumentResponse = any;

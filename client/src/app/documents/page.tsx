@@ -30,9 +30,15 @@ export default function Documents() {
     router.push(`/preview/${doc.id}`);
   };
 
-  const handleEdit = (doc: any) => {};
+  const handleEdit = (doc: any) => {
+    console.log({ doc });
 
-  const handleDelete = (doc: any) => {};
+    router.push(`/edit/${doc.id}`);
+  };
+
+  const handleDelete = (doc: any) => {
+    console.log({ doc });
+  };
 
   return (
     <div className="flex flex-col gap-[12px]">

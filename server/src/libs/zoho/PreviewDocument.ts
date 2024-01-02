@@ -13,7 +13,13 @@ const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
 class PreviewDocument {
-  static async execute({ filename }: { filename: string }) {
+  static async execute({
+    filename,
+    document_id,
+  }: {
+    filename: string;
+    document_id?: string | null;
+  }) {
     console.log('PREVIEW DOCUMENT: vvvvvvvvvvvv');
 
     try {
@@ -36,6 +42,7 @@ class PreviewDocument {
       const previewDocumentInfo = new PreviewDocumentInfo();
 
       //Time value used to generate unique document everytime. You can replace based on your application.
+      if (document_id?.length) previewDocumentInfo.setDocumentId(document_id);
       previewDocumentInfo.setDocumentName(filename);
 
       previewParameters.setDocumentInfo(previewDocumentInfo);

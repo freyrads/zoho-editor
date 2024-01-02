@@ -2,6 +2,8 @@ import { API_URL } from "@/config";
 import {
   ICreateDocumentParams,
   ICreateDocumentResponse,
+  IEditDocumentParams,
+  IEditDocumentResponse,
   IGetAllDocumentResponse,
   IGetAllSessionResponse,
   IGetDocumentParams,
@@ -21,6 +23,7 @@ export async function getDocument(params: IGetDocumentParams) {
     params,
   });
 }
+
 export async function createDocument(params: ICreateDocumentParams) {
   return axios.get<ICreateDocumentResponse>(`${API_URL}/zoho/create`, {
     params,
@@ -41,5 +44,11 @@ export async function postDocuments(data: FormData) {
     headers: {
       "Content-Type": "multipart/form-data",
     },
+  });
+}
+
+export async function editDocument(params: IEditDocumentParams) {
+  return axios.get<IEditDocumentResponse>(`${API_URL}/zoho/edit`, {
+    params,
   });
 }

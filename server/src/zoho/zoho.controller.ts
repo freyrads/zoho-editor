@@ -41,7 +41,10 @@ interface IGetCreateResponse {
   keyModified: {}; // ?
 }
 
+type IGetEditResponse = any;
+
 const previewCache = new Map<string, IGetPreviewResponse>();
+const editCache = new Map<string, IGetEditResponse>();
 
 @Controller('zoho')
 export class ZohoController {
@@ -73,7 +76,10 @@ export class ZohoController {
     }
 
     // if not in db, create new zoho session
-    const res = await PreviewDocument.execute({ filename: savedDoc.filename });
+    const res = await PreviewDocument.execute({
+      filename: savedDoc.filename,
+      document_id: savedDoc.zoho_document_id,
+    });
     console.log({ res });
 
     // save session to cache and db(TODO)
@@ -175,11 +181,13 @@ export class ZohoController {
     if (!savedDoc)
       throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
 
-    // const cached = previewCache.get(filename);
+    const cacheId = `${savedDoc.id}/${user.id}`;
 
-    // if (cached) {
-    //   return cached;
-    // }
+    const cached = editCache.get(cacheId);
+
+    if (cached) {
+      return cached;
+    }
 
     // TODO: find from db first if document already has session exist
 
@@ -202,7 +210,7 @@ export class ZohoController {
     console.log({ res });
 
     // save session to cache and db(TODO)
-    // previewCache.set(filename, res);
+    editCache.set(cacheId, res);
 
     return res;
   }
