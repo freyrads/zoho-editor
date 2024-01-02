@@ -8,6 +8,8 @@ import {
   Param,
   Post,
   Query,
+  Redirect,
+  Response,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
+import * as express from 'express';
 import EditDocument from 'src/libs/zoho/EditDocument';
 
 function createNewZohoDocId() {
@@ -81,11 +84,13 @@ export class ZohoController {
   }
 
   @Get('create')
+  @Redirect()
   async getCreate(
+    @Response() response: express.Response,
     @Query('user_id') user_id: string,
     @Query('filename')
     filename: string = `Untitled-${new Date().valueOf()}.docx`,
-  ): Promise<IGetCreateResponse> {
+  ): Promise<IGetCreateResponse | void> {
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
       console.error({ user_id });
@@ -96,6 +101,12 @@ export class ZohoController {
     if (!user) {
       console.error({ user });
       throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
+    }
+
+    console.log({ filename });
+
+    if (filename.startsWith('Untitled-')) {
+      return response.redirect(`/create/${filename}`);
     }
 
     const userName = user.name;
