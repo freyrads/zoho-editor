@@ -8,7 +8,6 @@ import {
   Param,
   Post,
   Query,
-  Redirect,
   Response,
   UploadedFile,
   UseInterceptors,
@@ -84,7 +83,6 @@ export class ZohoController {
   }
 
   @Get('create')
-  @Redirect()
   async getCreate(
     @Response() response: express.Response,
     @Query('user_id') user_id: string,
