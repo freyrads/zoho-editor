@@ -34,3 +34,12 @@ export async function getAllDocuments() {
 export async function getAllSessions() {
   return axios.get<IGetAllSessionResponse>(`${API_URL}/sessions`);
 }
+
+export async function postDocuments(data: FormData) {
+  console.log({ data });
+  return axios.post<IGetAllSessionResponse>(`${API_URL}/documents`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}

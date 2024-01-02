@@ -14,30 +14,30 @@ const links = [
     href: "/sessions",
     desc: "List Session",
   },
-  {
-    href: "/upload",
-    desc: "Upload",
-  },
-  {
-    href: "/preview",
-    desc: "Preview",
-  },
-  {
-    href: "/create",
-    desc: "Create",
-  },
-  {
-    href: "/edit",
-    desc: "Edit",
-  },
-  {
-    href: "/delete",
-    desc: "Delete",
-  },
-  {
-    href: "/co-edit",
-    desc: "Collab Edit",
-  },
+  // {
+  //   href: "/upload",
+  //   desc: "Upload",
+  // },
+  // {
+  //   href: "/preview",
+  //   desc: "Preview",
+  // },
+  // {
+  //   href: "/create",
+  //   desc: "Create",
+  // },
+  // {
+  //   href: "/edit",
+  //   desc: "Edit",
+  // },
+  // {
+  //   href: "/delete",
+  //   desc: "Delete",
+  // },
+  // {
+  //   href: "/co-edit",
+  //   desc: "Collab Edit",
+  // },
 ];
 
 export default function Home() {
