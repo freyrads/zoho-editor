@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Query,
+  Redirect,
   Response,
   UploadedFile,
   UseInterceptors,
@@ -83,12 +84,13 @@ export class ZohoController {
   }
 
   @Get('create')
+  @Redirect()
   async getCreate(
     @Response() response: express.Response,
     @Query('user_id') user_id: string,
     @Query('filename')
-    filename: string = `Untitled-${new Date().valueOf()}.docx`,
-  ): Promise<IGetCreateResponse | void> {
+    filename?: string,
+  ): Promise<IGetCreateResponse> {
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
       console.error({ user_id });
@@ -103,12 +105,14 @@ export class ZohoController {
 
     const oriFname = filename;
 
-    filename = decodeURIComponent(filename);
+    filename = filename
+      ? decodeURIComponent(filename)
+      : `Untitled-${new Date().valueOf()}.docx`;
 
     console.log({ filename: oriFname, sanitizedFilename: filename });
 
-    if (filename.startsWith('Untitled-')) {
-      return response.redirect(`/create/${filename}`);
+    if (!oriFname) {
+      return response.redirect(`/create/${filename}`) as any;
     }
 
     const userName = user.name;

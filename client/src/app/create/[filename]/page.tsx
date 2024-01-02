@@ -33,6 +33,8 @@ export default function Create() {
         filename: filename as string,
       });
 
+      console.log({ data });
+
       const { documentUrl } = data?.data ?? {};
 
       if (!documentUrl) return;
