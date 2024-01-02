@@ -50,6 +50,12 @@ export class ZohoController {
   async getPreview(
     @Query('document_id') document_id: string,
   ): Promise<IGetPreviewResponse> {
+    const docId = document_id?.length ? parseInt(document_id) : NaN;
+    if (Number.isNaN(docId)) {
+      console.error({ document_id });
+      throw new HttpException('Invalid document_id', HttpStatus.BAD_REQUEST);
+    }
+
     const cached = previewCache.get(document_id);
 
     if (cached) {
@@ -57,6 +63,12 @@ export class ZohoController {
     }
 
     // TODO: find from db first if document already has session exist
+    const savedDoc = await this.appService.getDocumentById(docId);
+
+    if (!savedDoc) {
+      console.error('Not found: document_id:', document_id);
+      throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
+    }
 
     // if not in db, create new zoho session
     const res = await PreviewDocument.execute({ filename: savedDoc.filename });
@@ -83,7 +95,7 @@ export class ZohoController {
     const user = await this.appService.getUserById(uid);
     if (!user) {
       console.error({ user });
-      throw new HttpException('Unknown user_id', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
     }
 
     const userName = user.name;
@@ -138,13 +150,13 @@ export class ZohoController {
     const user = await this.appService.getUserById(uid);
     if (!user) {
       console.error({ user });
-      throw new HttpException('Unknown user_id', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
     }
 
     const savedDoc = await this.appService.getDocumentById(docId);
 
     if (!savedDoc)
-      throw new HttpException('Unknown Document', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
 
     // const cached = previewCache.get(filename);
 
