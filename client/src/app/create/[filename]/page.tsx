@@ -3,16 +3,18 @@
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { createDocument } from "@/services/root";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { inspect } from "util";
 
-export default function Preview() {
+export default function Create() {
   const params = useParams();
 
   const [createResponse, setCreateResponse] = useState<any>();
   const { loggedInAs, setLoggedInAs } = useLoggedInAs();
   console.log(loggedInAs);
   const userId = loggedInAs?.id;
+
+  const loadingRef = useRef(false);
 
   const [src, setSrc] = useState<string>();
 
@@ -21,17 +23,27 @@ export default function Preview() {
   const shouldCreateDoc = !!filename?.length && !!userId;
 
   const execCreate = async () => {
-    const data = await createDocument({
-      user_id: String(userId!),
-      filename: filename as string,
-    });
+    if (loadingRef.current) return;
 
-    const { documentUrl } = data?.data ?? {};
+    try {
+      loadingRef.current = true;
 
-    if (!documentUrl) return;
+      const data = await createDocument({
+        user_id: String(userId!),
+        filename: filename as string,
+      });
 
-    setCreateResponse(data);
-    setSrc(documentUrl);
+      const { documentUrl } = data?.data ?? {};
+
+      if (!documentUrl) return;
+
+      setCreateResponse(data);
+      setSrc(documentUrl);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      loadingRef.current = false;
+    }
   };
 
   useEffect(() => {
