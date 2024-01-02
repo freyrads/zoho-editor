@@ -208,6 +208,7 @@ export class ZohoController {
     const existingEditSession = await this.appService.getZohoSession(
       savedDoc.zoho_document_id,
       savedDoc.id,
+      'edit',
     );
 
     const executeParams: {
