@@ -88,7 +88,7 @@ export class ZohoController {
     @Query('user_id') user_id: string,
     @Query('filename')
     filename?: string,
-  ): Promise<IGetCreateResponse> {
+  ): Promise<void> {
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
       console.error({ user_id });
@@ -110,7 +110,7 @@ export class ZohoController {
     console.log({ filename: oriFname, sanitizedFilename: filename });
 
     if (!oriFname) {
-      return response.redirect(`/create/${filename}`) as any;
+      return response.redirect(`/create/${filename}`);
     }
 
     const userName = user.name;
@@ -138,7 +138,7 @@ export class ZohoController {
 
     console.log({ createdSession });
 
-    return res;
+    response.json(res);
   }
 
   // @Get('edit')
