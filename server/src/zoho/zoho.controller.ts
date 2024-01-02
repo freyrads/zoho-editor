@@ -204,11 +204,13 @@ export class ZohoController {
       );
     }
 
+    const session_type: IZohoSessionType = 'edit';
+
     // TODO: if has edit session, do co-edit?
     const existingEditSession = await this.appService.getZohoSession(
       savedDoc.zoho_document_id,
       savedDoc.id,
-      'edit',
+      session_type,
     );
 
     const executeParams: {
@@ -230,6 +232,17 @@ export class ZohoController {
     ).execute(executeParams);
 
     console.log({ res });
+
+    await this.appService.createZohoSession({
+      data: {
+        user_id: uid,
+        zoho_document_id: res.documentId,
+        session_data: JSON.stringify(res),
+        session_type,
+        session_id: res.sessionId,
+        joined_session_id: existingEditSession?.id,
+      },
+    });
 
     // save session to cache and db(TODO)
     editCache.set(cacheId, res);

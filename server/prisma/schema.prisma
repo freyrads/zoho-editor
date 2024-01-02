@@ -55,4 +55,9 @@ model ZohoSession {
   session_type                  String             // type: create edit delete co_edit etc
   session_id                    String             @unique
   deleted                       Boolean            @default(false)
+  // if this user joined an existing ZohoSession
+  joined_session_id             Int?
+  joined_session                ZohoSession?       @relation("joined_session", fields: [joined_session_id], references: [id])
+  // sessions that joined to this session
+  joining_sessions              ZohoSession[]      @relation("joined_session")
 }
