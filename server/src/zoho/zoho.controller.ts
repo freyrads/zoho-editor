@@ -126,7 +126,7 @@ export class ZohoController {
     console.log({ res });
 
     // save to db
-    await this.appService.createZohoSession({
+    const createdSession = await this.appService.createZohoSession({
       data: {
         user_id: uid,
         zoho_document_id: res.documentId,
@@ -135,6 +135,8 @@ export class ZohoController {
         session_id: res.sessionId,
       },
     });
+
+    console.log({ createdSession });
 
     return res;
   }
