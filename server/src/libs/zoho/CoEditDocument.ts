@@ -19,76 +19,90 @@ const InvaildConfigurationException =
 const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
+interface ICreateDocumentParams {
+  userName: string;
+  documentId: string;
+  userId: string;
+  // filename: string;
+}
+
 class CoEditDocument {
   // TODO: adjustment required
-  static async execute() {
+  static async execute({
+    userName,
+    documentId,
+    userId,
+  }: ICreateDocumentParams) {
     try {
-      var sdkOperations = new V1Operations();
-      var createDocumentParameters = new CreateDocumentParameters();
+      const sdkOperations = new V1Operations();
+      const createDocumentParameters = new CreateDocumentParameters();
 
-      var documentInfo = new DocumentInfo();
+      const documentInfo = new DocumentInfo();
 
       //To collaborate in existing document, providing the document id (e.g: 1000) alone is enough.
       //Note: Make sure the document already exist in Zoho server (for below given document id).
       //Even if the document is added to this request, if document exist in Zoho server for given document id, then session will be create for the document which already exist in Zoho.
-      documentInfo.setDocumentId('1000');
+      documentInfo.setDocumentId(documentId);
 
       createDocumentParameters.setDocumentInfo(documentInfo);
 
-      var userInfo = new UserInfo();
+      const userInfo = new UserInfo();
 
-      userInfo.setUserId('1000');
-      userInfo.setDisplayName('Amelia');
+      userInfo.setUserId(userId);
+      userInfo.setDisplayName(userName);
 
       createDocumentParameters.setUserInfo(userInfo);
 
-      var documentDefaults = new DocumentDefaults();
+      const documentDefaults = new DocumentDefaults();
 
       documentDefaults.setTrackChanges('enabled');
 
       createDocumentParameters.setDocumentDefaults(documentDefaults);
 
-      var uiOptions = new UiOptions();
+      const uiOptions = new UiOptions();
 
       uiOptions.setDarkMode('show');
       uiOptions.setFileMenu('show');
       uiOptions.setSaveButton('show');
       uiOptions.setChatPanel('show');
+
       createDocumentParameters.setUiOptions(uiOptions);
 
-      var permissions = new Map();
+      const permissions = new Map();
 
-      permissions.set('collab.chat', false);
-      permissions.set('document.edit', true);
-      permissions.set('document.fill', false);
       permissions.set('document.export', true);
-      permissions.set('document.print', false);
+      permissions.set('document.print', true);
+      permissions.set('document.edit', true);
       permissions.set('review.comment', false);
       permissions.set('review.changes.resolve', false);
+      permissions.set('collab.chat', false);
       permissions.set('document.pausecollaboration', false);
+      permissions.set('document.fill', false);
 
       createDocumentParameters.setPermissions(permissions);
 
-      var callbackSettings = new CallbackSettings();
-      var saveUrlParams = new Map();
-
-      saveUrlParams.set('auth_token', '1234');
-      saveUrlParams.set('id', '123131');
+      const callbackSettings = new CallbackSettings();
+      const saveUrlParams = new Map();
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
-      callbackSettings.setRetries(1);
+      callbackSettings.setRetries(3);
       callbackSettings.setSaveFormat('docx');
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
+      // callbackSettings.setSaveUrl(
+      //   'https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157123434d4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286',
+      // );
       callbackSettings.setSaveUrl(
-        'https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157123434d4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286',
+        `${process.env.SERVER_URL}/zoho/${documentId}/save`,
       );
 
       createDocumentParameters.setCallbackSettings(callbackSettings);
 
-      var responseObject = await sdkOperations.createDocument(
+      const responseObject = await sdkOperations.createDocument(
         createDocumentParameters,
       );
+
+      console.log({ responseObject });
 
       if (responseObject != null) {
         //Get the status code from response
@@ -132,9 +146,13 @@ class CoEditDocument {
             console.log('\nRequest not completed successfullly');
           }
         }
+
+        return writerResponseObject;
       }
     } catch (error) {
       console.log('\nException while running sample code', error);
+    } finally {
+      console.log('EDIT DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }

@@ -110,7 +110,7 @@ class EditDocument {
       const callbackSettings = new CallbackSettings();
       const saveUrlParams = new Map();
 
-      saveUrlParams.set('author_id', userId);
+      // saveUrlParams.set('author_id', userId);
 
       // const saveUrlHeaders = new Map();
 
@@ -124,7 +124,6 @@ class EditDocument {
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(
-        // 'https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net',
         `${process.env.SERVER_URL}/zoho/${documentId}/save`,
       );
 

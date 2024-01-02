@@ -200,6 +200,8 @@ export class ZohoController {
       );
     }
 
+    // TODO: if has edit session, do co-edit?
+
     // if not in db, create new zoho session
     const res = await EditDocument.execute({
       filename: savedDoc.filename,
