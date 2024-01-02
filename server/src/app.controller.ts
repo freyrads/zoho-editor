@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Headers,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -60,11 +62,21 @@ export class AppController {
     console.log('POST documents:');
     console.log({ params, body, queries, headers, file });
 
+    const auid = !!body?.author_id?.length ? parseInt(body.author_id) : NaN;
+
+    if (Number.isNaN(auid))
+      throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
+    const user = await this.appService.getUserById(auid);
+
+    if (!user)
+      throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
     const createdDoc = await this.appService.createDocument({
       data: {
         filename: file.filename,
         existing: true,
-        author_id: body.author_id,
+        author_id: user.id,
         file_data: JSON.stringify(file),
       },
     });

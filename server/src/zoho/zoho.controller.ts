@@ -185,13 +185,23 @@ POST :id/save:
 
     // TODO: update/insert document entry in db
     if (!existingDoc) {
+      const auid = !!body?.author_id?.length ? parseInt(body.author_id) : NaN;
+      if (Number.isNaN(auid))
+        throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
+      const user = await this.appService.getUserById(auid);
+
+      if (!user)
+        throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
       const createdDoc = await this.appService.createDocument({
         data: {
           file_data: JSON.stringify(content),
           zoho_document_id: params.id,
           filename: content.filename,
-          existing: body.existing,
-          author_id: body.author_id,
+          existing: false, //body.existing,
+          author_id: user.id,
+          id,
         },
       });
 
