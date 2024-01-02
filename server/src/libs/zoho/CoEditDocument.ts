@@ -23,7 +23,10 @@ interface ICreateDocumentParams {
   userName: string;
   documentId: string;
   userId: string;
-  // filename: string;
+  /**
+   * Dummy prop, unused for CoEdit
+   */
+  filename?: string;
 }
 
 class CoEditDocument {

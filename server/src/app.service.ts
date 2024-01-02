@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { IZohoSessionType } from './interfaces/zoho';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -71,6 +72,20 @@ export class AppService extends PrismaClient implements OnModuleInit {
       },
       data: {
         zoho_document_id,
+      },
+    });
+  }
+
+  async getZohoSession(
+    zoho_document_id: string,
+    document_id: number,
+    session_type: IZohoSessionType,
+  ) {
+    return this.zohoSession.findFirst({
+      where: {
+        document_id,
+        zoho_document_id,
+        session_type,
       },
     });
   }

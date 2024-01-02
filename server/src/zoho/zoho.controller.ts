@@ -18,6 +18,8 @@ import { AppService } from 'src/app.service';
 import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
 import * as express from 'express';
 import EditDocument from 'src/libs/zoho/EditDocument';
+import CoEditDocument from 'src/libs/zoho/CoEditDocument';
+import { IZohoSessionType } from 'src/interfaces/zoho';
 
 function createNewZohoDocId() {
   return '' + new Date().getTime();
@@ -131,13 +133,15 @@ export class ZohoController {
 
     console.log({ res });
 
+    const session_type: IZohoSessionType = 'create';
+
     // save to db
     const createdSession = await this.appService.createZohoSession({
       data: {
         user_id: uid,
         zoho_document_id: res.documentId,
         session_data: JSON.stringify(res),
-        session_type: 'create',
+        session_type,
         session_id: res.sessionId,
       },
     });
@@ -201,14 +205,29 @@ export class ZohoController {
     }
 
     // TODO: if has edit session, do co-edit?
+    const existingEditSession = await this.appService.getZohoSession(
+      savedDoc.zoho_document_id,
+      savedDoc.id,
+    );
 
-    // if not in db, create new zoho session
-    const res = await EditDocument.execute({
-      filename: savedDoc.filename,
+    const executeParams: {
+      documentId: string;
+      userId: string;
+      userName: string;
+      filename?: string;
+    } = {
       documentId: savedDoc.zoho_document_id,
       userId: String(user.id),
       userName: user.name,
-    });
+      filename: savedDoc.filename,
+    };
+
+    // if not in db, create new zoho session
+    const res = await (existingEditSession
+      ? CoEditDocument
+      : EditDocument
+    ).execute(executeParams);
+
     console.log({ res });
 
     // save session to cache and db(TODO)
