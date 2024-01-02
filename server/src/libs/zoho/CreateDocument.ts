@@ -120,16 +120,15 @@ class CreateDocument {
       const callbackSettings = new CallbackSettings();
       const saveUrlParams = new Map();
 
-      saveUrlParams.set('auth_token', '1234');
-      saveUrlParams.set('id', '123131');
+      saveUrlParams.set('author_id', userId);
 
-      const saveUrlHeaders = new Map();
+      // const saveUrlHeaders = new Map();
 
-      saveUrlHeaders.set('header1', 'value1');
-      saveUrlHeaders.set('header2', 'value2');
+      // saveUrlHeaders.set('header1', 'value1');
+      // saveUrlHeaders.set('header2', 'value2');
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
-      callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
+      // callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
       callbackSettings.setRetries(3);
       callbackSettings.setSaveFormat('docx');
       callbackSettings.setHttpMethodType('post');

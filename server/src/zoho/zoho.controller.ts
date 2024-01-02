@@ -186,15 +186,27 @@ POST :id/save:
     // TODO: update/insert document entry in db
     if (!existingDoc) {
       const auid = !!body?.author_id?.length ? parseInt(body.author_id) : NaN;
-      if (Number.isNaN(auid))
-        throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+      if (Number.isNaN(auid)) {
+        const err = new HttpException(
+          'Invalid author_id',
+          HttpStatus.BAD_REQUEST,
+        );
+        console.error(err);
+        throw err;
+      }
 
       const user = await this.appService.getUserById(auid);
 
       console.log({ user });
 
-      if (!user)
-        throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+      if (!user) {
+        const err = new HttpException(
+          'Invalid author_id',
+          HttpStatus.BAD_REQUEST,
+        );
+        console.error(err);
+        throw err;
+      }
 
       const createdDoc = await this.appService.createDocument({
         data: {
