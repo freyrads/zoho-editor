@@ -213,12 +213,7 @@ export class ZohoController {
       session_type,
     );
 
-    const executeParams: {
-      documentId: string;
-      userId: string;
-      userName: string;
-      filename?: string;
-    } = {
+    const executeParams = {
       documentId: savedDoc.zoho_document_id,
       userId: String(user.id),
       userName: user.name,
