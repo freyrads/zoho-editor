@@ -203,7 +203,6 @@ POST :id/save:
           filename: content.filename,
           existing: false, //body.existing,
           author_id: user.id,
-          id,
         },
       });
 
