@@ -22,7 +22,18 @@ model Document {
   id                            Int                @default(autoincrement()) @id
   title                         String?
   filename                      String             @unique
-  zoho_document_id              String             @unique
+
+  // file_data JSON string
+  // fieldname: 'content',
+  // originalname: 'New Document: 1703822085550.docx',
+  // encoding: '7bit',
+  // mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  // destination: './docs/',
+  // filename: 'New Document: 1703822085550.docx',
+  // path: 'docs/New Document: 1703822085550.docx',
+  // size: 101173
+  file_data                     String
+  zoho_document_id              String?            @unique
   author                        User               @relation(fields: [author_id], references: [id])
   author_id                     Int
   existing                      Boolean

@@ -187,6 +187,7 @@ POST :id/save:
     if (!existingDoc) {
       const createdDoc = await this.appService.createDocument({
         data: {
+          file_data: JSON.stringify(content),
           zoho_document_id: params.id,
           filename: content.filename,
           existing: body.existing,

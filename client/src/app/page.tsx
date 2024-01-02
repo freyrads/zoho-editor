@@ -7,6 +7,14 @@ import { useQuery } from "@tanstack/react-query";
 
 const links = [
   {
+    href: "/documents",
+    desc: "List Document",
+  },
+  {
+    href: "/sessions",
+    desc: "List Session",
+  },
+  {
     href: "/upload",
     desc: "Upload",
   },
