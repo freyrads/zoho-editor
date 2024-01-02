@@ -191,6 +191,8 @@ POST :id/save:
 
       const user = await this.appService.getUserById(auid);
 
+      console.log({ user });
+
       if (!user)
         throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
 
