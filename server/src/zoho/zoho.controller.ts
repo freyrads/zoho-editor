@@ -15,10 +15,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
-import { CreateDocument, PreviewDocument } from 'src/libs/zoho';
+import {
+  CreateDocument,
+  PreviewDocument,
+  EditDocument,
+  CoEditDocument,
+} from 'src/libs/zoho';
 import * as express from 'express';
-import EditDocument from 'src/libs/zoho/EditDocument';
-import CoEditDocument from 'src/libs/zoho/CoEditDocument';
 import { IZohoSessionType } from 'src/interfaces/zoho';
 
 function createNewZohoDocId() {
