@@ -16,9 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-auto">
       <body
-        className={`${inter.className} flex min-h-screen w-screen justify-center flex-col items-center gap-[20px]`}
+        className={`${inter.className} overflow-auto flex min-h-screen min-w-screen justify-center flex-col items-center gap-[20px]`}
       >
         <Providers>{children}</Providers>
       </body>

@@ -35,7 +35,7 @@ export async function getAllDocuments() {
 }
 
 export async function getAllSessions() {
-  return axios.get<IGetAllSessionResponse>(`${API_URL}/sessions`);
+  return axios.get<IGetAllSessionResponse[]>(`${API_URL}/sessions`);
 }
 
 export async function postDocuments(data: FormData) {

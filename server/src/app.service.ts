@@ -89,4 +89,28 @@ export class AppService extends PrismaClient implements OnModuleInit {
       },
     });
   }
+
+  async deleteSessionById(id: number) {
+    return this.zohoSession.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async deleteDocumentById(id: number) {
+    return this.document.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async deleteSessionsByDocumentId(id: number) {
+    return this.zohoSession.deleteMany({
+      where: {
+        document_id: id,
+      },
+    });
+  }
 }

@@ -38,11 +38,11 @@ export default function PreviewFile() {
     return <div>No filename provided or not logged in</div>;
 
   return (
-    <main className="flex min-h-screen max-h-screen min-w-screen max-w-screen overflow-hidden flex-col items-center">
+    <main className="flex min-h-screen max-h-screen min-w-screen max-w-screen overflow-auto flex-col items-center">
       <div className="break-all">
         {data?.data ? inspect(data.data) : "Loading..."}
       </div>
-      <div className="flex w-[1000px]">
+      <div className="flex w-full">
         <iframe
           name="preview-iframe"
           width="100%"

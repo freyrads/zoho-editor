@@ -57,9 +57,11 @@ export default function Create() {
   if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
   return (
-    <main className="flex min-h-screen max-h-screen overflow-hidden flex-col items-center">
-      {inspect(createResponse?.data) ?? "Loading..."}
-      <div className="flex w-[1000px]">
+    <main className="flex min-h-screen max-h-screen overflow-auto flex-col items-center">
+      <div className="break-all">
+        {inspect(createResponse?.data) ?? "Loading..."}
+      </div>
+      <div className="flex w-full">
         <iframe
           name="preview-iframe"
           width="100%"

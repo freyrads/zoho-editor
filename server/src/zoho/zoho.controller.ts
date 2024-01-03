@@ -213,6 +213,9 @@ export class ZohoController {
       session_type,
     );
 
+    // TODO: make this a request param or something
+    const shouldCoEdit = !!existingEditSession;
+
     const executeParams = {
       documentId: savedDoc.zoho_document_id,
       userId: String(user.id),
@@ -221,7 +224,7 @@ export class ZohoController {
     };
 
     // if not in db, create new zoho session
-    const res = await (existingEditSession
+    const res = await (existingEditSession && shouldCoEdit
       ? CoEditDocument
       : EditDocument
     ).execute(executeParams);
@@ -232,6 +235,7 @@ export class ZohoController {
       data: {
         user_id: uid,
         zoho_document_id: res.documentId,
+        document_id: savedDoc.id,
         session_data: JSON.stringify(res),
         session_type,
         session_id: res.sessionId,
@@ -346,5 +350,59 @@ POST :id/save:
       console.log({ createdDoc });
     }
     // else update?
+  }
+
+  @Post('sessions/:id/delete')
+  async postSessionDelete(@Param('id') id: string) {
+    console.log('POST sessions/:id/delete:');
+    console.log({ id });
+
+    const idn = id?.length ? parseInt(id) : NaN;
+
+    if (Number.isNaN(idn)) {
+      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.appService.deleteSessionById(idn);
+  }
+
+  @Post('documents/:id/delete')
+  async postDocumentDelete(@Param('id') id: string) {
+    console.log('POST documents/:id/delete:');
+    console.log({ id });
+
+    const idn = id?.length ? parseInt(id) : NaN;
+
+    if (Number.isNaN(idn)) {
+      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+    }
+
+    // TODO: find document by id first to get documentDeleteUrl
+
+    // TODO: call DELETE documentDeleteUrl zoho api
+
+    const res = await this.appService.deleteDocumentById(idn);
+
+    // TODO: delete docx file in storage?
+    return res;
+  }
+
+  @Post('documents/:id/sessions/delete')
+  async postDocumentSessionsDelete(@Param('id') id: string) {
+    console.log('POST documents/:id/sessions/delete:');
+    console.log({ id });
+
+    const idn = id?.length ? parseInt(id) : NaN;
+
+    if (Number.isNaN(idn)) {
+      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+    }
+
+    // TODO: find sessions by document_id first to get all to be deleted session
+    // and call DELETE sessionDeleteUrl zoho api for each session
+
+    const res = await this.appService.deleteSessionsByDocumentId(idn);
+
+    return res;
   }
 }
