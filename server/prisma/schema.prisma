@@ -22,6 +22,7 @@ model Document {
   id                            Int                @default(autoincrement()) @id
   title                         String?
   filename                      String             @unique
+  is_template                   Boolean            @default(false)
 
   // file_data JSON string
   // fieldname: 'content',

@@ -87,4 +87,54 @@ export class AppController {
 
     return createdDoc;
   }
+
+  @Post('template-documents')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: process.env.TEMPLATE_DOCUMENT_FOLDER,
+        filename: (req, file, cb) => {
+          console.log({ req, file });
+
+          cb(null, file.originalname);
+        },
+      }),
+    }),
+  )
+  async postTemplateDocumentSave(
+    @Param() params: any,
+    @Body() body: any,
+    @Query() queries: any,
+    @Headers() headers: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log('POST template-documents:');
+    console.log({ params, body, queries, headers, file });
+
+    const auid = !!body?.author_id?.length ? parseInt(body.author_id) : NaN;
+
+    if (Number.isNaN(auid))
+      throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
+    const user = await this.appService.getUserById(auid);
+
+    console.log({ user });
+
+    if (!user)
+      throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+
+    const createdDoc = await this.appService.createDocument({
+      data: {
+        filename: file.filename,
+        existing: true,
+        author_id: user.id,
+        file_data: JSON.stringify(file),
+        is_template: true,
+      },
+    });
+
+    console.log({ createdDoc });
+
+    return createdDoc;
+  }
 }

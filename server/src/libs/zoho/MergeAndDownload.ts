@@ -29,6 +29,7 @@ interface IMergeAndDownloadParams {
    * }
    */
   mergeContent: Map<string, string>;
+  mergedFileName: string;
 }
 
 class MergeAndDownload {
@@ -36,6 +37,7 @@ class MergeAndDownload {
     filename,
     isUrl,
     mergeContent,
+    mergedFileName,
   }: IMergeAndDownloadParams) {
     console.log('MERGE AND DOWNLOAD DOCUMENT: vvvvvvvvvvvv');
 
@@ -58,12 +60,14 @@ class MergeAndDownload {
       //   'https://demo.office-integrator.com/zdocs/OfferLetter.zdoc',
       // );
       else {
-        const filePath = process.env.DOCUMENT_FOLDER + filename;
+        const filePath = process.env.TEMPLATE_DOCUMENT_FOLDER + filename;
+
         // TODO: handle error
         const fileStream = fs.readFileSync(filePath);
         const streamWrapper = new StreamWrapper(filename, fileStream, filePath);
         parameters.setFileContent(streamWrapper);
       }
+
       // parameters.setMergeDataJsonUrl(
       //   'https://demo.office-integrator.com/data/candidates.json',
       // );
@@ -113,7 +117,7 @@ class MergeAndDownload {
             // TODO: filename?
             if (convertedDocument instanceof StreamWrapper) {
               const outputFilePath =
-                process.env.DOCUMENT_FOLDER + `merged-${filename}`;
+                process.env.DOCUMENT_FOLDER + mergedFileName;
 
               fs.writeFileSync(outputFilePath, convertedDocument.getStream());
               console.log(
