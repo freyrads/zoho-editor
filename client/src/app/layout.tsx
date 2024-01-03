@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/assets/scss/globals.scss";
 import Providers from "./providers";
+import LogoutButton from "@/components/LogoutButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         className={`${inter.className} overflow-auto flex min-h-screen min-w-screen justify-center flex-col items-center gap-[20px]`}
       >
         <Providers>{children}</Providers>
+        <LogoutButton />
       </body>
     </html>
   );

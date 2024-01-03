@@ -11,7 +11,7 @@ const setSetLoggedInAs = (newVal?: IGetUsersResponse) => {
   else localStorage.removeItem("user");
 
   for (const set of setters) {
-    set(newVal);
+    set(newVal ? { ...newVal } : newVal);
   }
 };
 
@@ -45,8 +45,13 @@ export default function useLoggedInAs() {
   const [val, setVal] = useState<IGetUsersResponse | undefined>(currentValue);
 
   useEffect(() => {
+    console.log("Rerender");
     const savedVal = checkValue();
-    if (savedVal && currentValue !== val) setVal(savedVal);
+    if (savedVal && currentValue !== val) {
+      console.log("setVal called");
+      setVal({ ...savedVal });
+      return;
+    }
 
     addSetter(setVal);
 
@@ -54,6 +59,8 @@ export default function useLoggedInAs() {
       removeSetter(setVal);
     };
   }, []);
+
+  console.log({ val });
 
   return { loggedInAs: val, setLoggedInAs: setSetLoggedInAs };
 }
