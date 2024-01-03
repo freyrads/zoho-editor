@@ -10,28 +10,68 @@ const OfficeIntegratorSDKOperations =
 const MergeAndDownloadDocumentParameters =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_download_document_parameters').MergeAndDownloadDocumentParameters;
 
+interface IMergeAndDownloadParams {
+  filename: string;
+  /**
+   * Whether filename is url
+   */
+  isUrl?: boolean;
+  /**
+   * JSON string:
+   * {"data":[{"name":"Amelia","email":"amelia@zylker.com"}]}
+   *
+   * {
+   *   data: [
+   *   {entry},
+   *   {entry},
+   *   {entry},
+   *   ]
+   * }
+   */
+  mergeContent: Map<string, string>;
+}
+
 class MergeAndDownload {
-  static async execute() {
+  static async execute({
+    filename,
+    isUrl,
+    mergeContent,
+  }: IMergeAndDownloadParams) {
+    console.log('MERGE AND DOWNLOAD DOCUMENT: vvvvvvvvvvvv');
+
+    console.log({
+      filename,
+      isUrl,
+      mergeContent,
+    });
+
     try {
       const sdkOperations = new OfficeIntegratorSDKOperations();
       const parameters = new MergeAndDownloadDocumentParameters();
 
+      if (isUrl)
+        parameters.setFileUrl(
+          // filename is url
+          filename,
+        );
       // parameters.setFileUrl(
       //   'https://demo.office-integrator.com/zdocs/OfferLetter.zdoc',
       // );
+      else {
+        const filePath = process.env.DOCUMENT_FOLDER + filename;
+        // TODO: handle error
+        const fileStream = fs.readFileSync(filePath);
+        const streamWrapper = new StreamWrapper(filename, fileStream, filePath);
+        parameters.setFileContent(streamWrapper);
+      }
       // parameters.setMergeDataJsonUrl(
       //   'https://demo.office-integrator.com/data/candidates.json',
       // );
 
-      // var fileName = "OfferLetter.zdoc";
-      // var filePath = __dirname + "/sample_documents/OfferLetter.zdoc";
-      // TODO: handle error
-      // var fileStream = fs.readFileSync(filePath);
-      // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
-
       // parameters.setPassword('***');
       parameters.setOutputFormat('docx');
-      // parameters.setFileContent(streamWrapper);
+
+      parameters.setMergeData(mergeContent);
 
       // var jsonFileName = "candidates.json";
       // var jsonFilePath = __dirname + "/sample_documents/candidates.json";
@@ -59,6 +99,8 @@ class MergeAndDownload {
       const responseObject =
         await sdkOperations.mergeAndDownloadDocument(parameters);
 
+      console.log({ responseObject });
+
       if (responseObject != null) {
         console.log('\nStatus Code: ' + responseObject.statusCode);
 
@@ -68,9 +110,10 @@ class MergeAndDownload {
           if (writerResponseObject instanceof FileBodyWrapper) {
             const convertedDocument = writerResponseObject.getFile();
 
+            // TODO: filename?
             if (convertedDocument instanceof StreamWrapper) {
               const outputFilePath =
-                __dirname + '/sample_documents/merge_and_download.pdf';
+                process.env.DOCUMENT_FOLDER + `merged-${filename}`;
 
               fs.writeFileSync(outputFilePath, convertedDocument.getStream());
               console.log(
@@ -89,9 +132,13 @@ class MergeAndDownload {
             console.log('\nRequest not completed successfullly');
           }
         }
+
+        return writerResponseObject;
       }
     } catch (error) {
       console.log('\nException while running sample code', error);
+    } finally {
+      console.log('MERGE AND DOWNLOAD DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }
