@@ -46,7 +46,9 @@ export default function PreviewFile() {
         <iframe
           name="preview-iframe"
           width="100%"
-          height={500}
+          style={{
+            height: "100vh",
+          }}
           src={previewSrc}
         ></iframe>
       </div>

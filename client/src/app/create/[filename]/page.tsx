@@ -65,7 +65,9 @@ export default function Create() {
         <iframe
           name="preview-iframe"
           width="100%"
-          height={500}
+          style={{
+            height: "100vh",
+          }}
           src={src}
         ></iframe>
       </div>
