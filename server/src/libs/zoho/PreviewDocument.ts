@@ -42,7 +42,9 @@ class PreviewDocument {
       const previewDocumentInfo = new PreviewDocumentInfo();
 
       //Time value used to generate unique document everytime. You can replace based on your application.
-      if (document_id?.length) previewDocumentInfo.setDocumentId(document_id);
+      // WARN: no setDocumentId method for PreviewDocumentInfo
+      // if (document_id?.length) previewDocumentInfo.setDocumentId(document_id);
+      //
       previewDocumentInfo.setDocumentName(filename);
 
       previewParameters.setDocumentInfo(previewDocumentInfo);
