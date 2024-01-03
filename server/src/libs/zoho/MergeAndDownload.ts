@@ -16,20 +16,21 @@ class MergeAndDownload {
       const sdkOperations = new OfficeIntegratorSDKOperations();
       const parameters = new MergeAndDownloadDocumentParameters();
 
-      parameters.setFileUrl(
-        'https://demo.office-integrator.com/zdocs/OfferLetter.zdoc',
-      );
-      parameters.setMergeDataJsonUrl(
-        'https://demo.office-integrator.com/data/candidates.json',
-      );
+      // parameters.setFileUrl(
+      //   'https://demo.office-integrator.com/zdocs/OfferLetter.zdoc',
+      // );
+      // parameters.setMergeDataJsonUrl(
+      //   'https://demo.office-integrator.com/data/candidates.json',
+      // );
 
       // var fileName = "OfferLetter.zdoc";
       // var filePath = __dirname + "/sample_documents/OfferLetter.zdoc";
+      // TODO: handle error
       // var fileStream = fs.readFileSync(filePath);
       // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
 
-      parameters.setPassword('***');
-      parameters.setOutputFormat('pdf');
+      // parameters.setPassword('***');
+      parameters.setOutputFormat('docx');
       // parameters.setFileContent(streamWrapper);
 
       // var jsonFileName = "candidates.json";
