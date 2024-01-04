@@ -34,6 +34,7 @@ interface ICreateMergeTemplateDocumentParams {
   mergeContent: string;
   mergeContentName: string;
   newFilename: string;
+  inTemplateFolder?: boolean;
   // mergeFilename: string;
 }
 
@@ -46,6 +47,7 @@ class CreateMergeTemplate {
     mergeContent, // mergeFilename,
     mergeContentName,
     newFilename,
+    inTemplateFolder,
   }: ICreateMergeTemplateDocumentParams) {
     console.log('CREATE MERGE TEMPLATE DOCUMENT: vvvvvvvvvvvv');
 
@@ -57,6 +59,7 @@ class CreateMergeTemplate {
       mergeContent,
       mergeContentName,
       newFilename,
+      inTemplateFolder,
     });
 
     try {
@@ -76,7 +79,11 @@ class CreateMergeTemplate {
       // const fileStream = fs.readFileSync(filePath);
       // const streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
 
-      const filePath = `${process.env.TEMPLATE_DOCUMENT_FOLDER}/${filename}`;
+      const filePath = `${
+        inTemplateFolder
+          ? process.env.TEMPLATE_DOCUMENT_FOLDER
+          : process.env.DOCUMENT_FOLDER
+      }/${filename}`;
       const streamWrapper = new StreamWrapper(null, null, filePath);
 
       templateParameters.setDocument(streamWrapper);
