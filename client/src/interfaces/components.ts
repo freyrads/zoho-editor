@@ -6,3 +6,8 @@ export interface ILinkMapEntry {
 export interface ILinkMapProps {
   links: ILinkMapEntry[];
 }
+
+export interface IEditorProps {
+  data?: any;
+  src?: string;
+}

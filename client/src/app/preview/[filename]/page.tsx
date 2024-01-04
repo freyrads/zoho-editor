@@ -1,16 +1,16 @@
 "use client";
 
+import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { getDocument } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { inspect } from "util";
 
 export default function PreviewFile() {
   const params = useParams();
 
-  const { loggedInAs, setLoggedInAs } = useLoggedInAs();
+  const { loggedInAs } = useLoggedInAs();
   const userId = loggedInAs?.id;
 
   const [previewSrc, setPreviewSrc] = useState<string>();
@@ -37,21 +37,5 @@ export default function PreviewFile() {
   if (!shouldPreviewDoc)
     return <div>No filename provided or not logged in</div>;
 
-  return (
-    <main className="flex min-h-screen max-h-screen min-w-screen max-w-screen overflow-auto flex-col items-center">
-      <div className="break-all">
-        {data?.data ? inspect(data.data) : "Loading..."}
-      </div>
-      <div className="flex w-full">
-        <iframe
-          name="preview-iframe"
-          width="100%"
-          style={{
-            height: "100vh",
-          }}
-          src={previewSrc}
-        ></iframe>
-      </div>
-    </main>
-  );
+  return <Editor data={data?.data} src={previewSrc} />;
 }

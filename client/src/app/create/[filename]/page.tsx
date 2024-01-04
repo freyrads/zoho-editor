@@ -1,10 +1,10 @@
 "use client";
 
+import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { createDocument } from "@/services/root";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { inspect } from "util";
 
 export default function Create() {
   const params = useParams();
@@ -56,21 +56,5 @@ export default function Create() {
 
   if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
-  return (
-    <main className="flex min-h-screen max-h-screen overflow-auto flex-col items-center">
-      <div className="break-all">
-        {inspect(createResponse?.data) ?? "Loading..."}
-      </div>
-      <div className="flex w-full">
-        <iframe
-          name="preview-iframe"
-          width="100%"
-          style={{
-            height: "100vh",
-          }}
-          src={src}
-        ></iframe>
-      </div>
-    </main>
-  );
+  return <Editor data={createResponse?.data} src={src} />;
 }

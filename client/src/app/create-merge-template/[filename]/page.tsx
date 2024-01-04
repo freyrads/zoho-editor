@@ -2,11 +2,11 @@
 
 import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
-import { editDocument } from "@/services/root";
+import { createDocument } from "@/services/root";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-export default function Edit() {
+export default function CreateMergeTemplate() {
   const params = useParams();
 
   const [createResponse, setCreateResponse] = useState<any>();
@@ -18,9 +18,9 @@ export default function Edit() {
 
   const [src, setSrc] = useState<string>();
 
-  const document_id = params.document_id;
+  const filename = params.filename;
 
-  const shouldEditDoc = !!document_id?.length && !!userId;
+  const shouldCreateDoc = !!filename?.length && !!userId;
 
   const execCreate = async () => {
     if (loadingRef.current) return;
@@ -28,9 +28,9 @@ export default function Edit() {
     try {
       loadingRef.current = true;
 
-      const data = await editDocument({
+      const data = await createDocument({
         user_id: String(userId!),
-        document_id: document_id as string,
+        filename: filename as string,
       });
 
       console.log({ data });
@@ -49,12 +49,12 @@ export default function Edit() {
   };
 
   useEffect(() => {
-    if (!shouldEditDoc) return;
+    if (!shouldCreateDoc) return;
 
     execCreate();
-  }, [shouldEditDoc]);
+  }, [shouldCreateDoc]);
 
-  if (!shouldEditDoc) return <div>No filename provided or not logged in</div>;
+  if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
   return <Editor data={createResponse?.data} src={src} />;
 }
