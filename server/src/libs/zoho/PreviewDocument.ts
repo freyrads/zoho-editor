@@ -14,8 +14,7 @@ const V1Operations =
 
 class PreviewDocument {
   static async execute({
-    filename,
-    document_id,
+    filename, // document_id,
   }: {
     filename: string;
     document_id?: string | null;
@@ -34,7 +33,7 @@ class PreviewDocument {
       const filePath = process.env.DOCUMENT_FOLDER + filename;
       // TODO: handle error
       const fileStream = fs.readFileSync(filePath);
-      const streamWrapper = new StreamWrapper(filename, fileStream, filePath);
+      const streamWrapper = new StreamWrapper(filename, fileStream);
       // const streamWrapper = new StreamWrapper(null, null, filePath);
 
       previewParameters.setDocument(streamWrapper);
