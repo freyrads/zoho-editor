@@ -194,31 +194,8 @@ export class ZohoController {
         /*
         {\"data\":[{\"Judul\":\"Amelia\",\"Keterangan\":\"amelia@zylker.com\",\"Deskripsi\":\"Deskripsi 1\"},{\"Judul\":\"Amelia No. 2\",\"Keterangan\":\"amelia2@zylker.com\",\"Deskripsi\":\"Deskripsi 2\"}]}
         */
-        mergeContent: JSON.stringify({
-          data: [
-            {
-              Judul: 'Amelia',
-              Keterangan: 'amelia@zylker.com',
-              Deskripsi: 'Deskripsi 1',
-            },
-            {
-              Judul: 'Amelia No. 2',
-              Keterangan: 'amelia2@zylker.com',
-              Deskripsi: 'Deskripsi 2',
-            },
-            {
-              Judul: 'Amelia No. 3',
-              Keterangan: 'amelia3@zylker.com',
-              Deskripsi: 'Deskripsi 3',
-            },
-            {
-              Judul: 'Amelia No. 4',
-              Keterangan: 'amelia4@zylker.com',
-              Deskripsi: 'Deskripsi 4',
-            },
-          ],
-        }),
-        mergeContentName: 'amelia.json',
+        // mergeContent: JSON.stringify(),
+        // mergeContentName: 'amelia.json',
         newFilename: isMergeTemplate ? (filename as string) : '',
       };
     // : {

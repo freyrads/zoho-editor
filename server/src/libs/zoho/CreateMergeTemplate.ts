@@ -1,4 +1,4 @@
-const fs = require('fs');
+// const fs = require('fs');
 const StreamWrapper =
   require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
 const Margin =
@@ -21,7 +21,7 @@ const InvaildConfigurationException =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception').InvaildConfigurationException;
 const OfficeIntegratorSDKOperations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
-import { Readable } from 'stream';
+// import { Readable } from 'stream';
 
 interface ICreateMergeTemplateDocumentParams {
   userName: string;
@@ -31,8 +31,8 @@ interface ICreateMergeTemplateDocumentParams {
   /*
    * JSON string
    */
-  mergeContent: string;
-  mergeContentName: string;
+  // mergeContent: string;
+  // mergeContentName: string;
   newFilename: string;
   inTemplateFolder?: boolean;
   // mergeFilename: string;
@@ -44,8 +44,8 @@ class CreateMergeTemplate {
     documentId,
     userId,
     filename,
-    mergeContent, // mergeFilename,
-    mergeContentName,
+    // mergeContent, // mergeFilename,
+    // mergeContentName,
     newFilename,
     inTemplateFolder,
   }: ICreateMergeTemplateDocumentParams) {
@@ -56,8 +56,8 @@ class CreateMergeTemplate {
       documentId,
       userId,
       filename,
-      mergeContent,
-      mergeContentName,
+      // mergeContent,
+      // mergeContentName,
       newFilename,
       inTemplateFolder,
     });
@@ -92,14 +92,17 @@ class CreateMergeTemplate {
       // const jsonFilePath = './sample_documents/candidates.json';
       // const jsonFileStream = fs.readFileSync(jsonFilePath);
 
-      const jsonFileStream = new Readable();
-      jsonFileStream.push(mergeContent);
-      jsonFileStream.push(null);
+      // const jsonFileStream = new Readable();
+      // jsonFileStream.push(mergeContent);
+      // jsonFileStream.push(null);
 
       const jsonStreamWrapper = new StreamWrapper(
-        mergeContentName,
-        jsonFileStream,
+        // mergeContentName,
+        // jsonFileStream,
         // jsonFilePath,
+        null,
+        null,
+        'amelia.json',
       );
 
       templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
