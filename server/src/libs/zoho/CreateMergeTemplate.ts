@@ -229,6 +229,7 @@ class CreateMergeTemplate {
         return writerResponseObject;
       }
     } catch (error) {
+      console.error(error);
       console.log('\nException while running sample code', error);
     } finally {
       console.log('CREATE MERGE TEMPLATE DOCUMENT: ^^^^^^^^^^^^');
