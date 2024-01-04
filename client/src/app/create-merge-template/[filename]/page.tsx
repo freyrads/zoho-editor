@@ -3,11 +3,14 @@
 import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { createDocument } from "@/services/root";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function CreateMergeTemplate() {
   const params = useParams();
+  const searchParams = useSearchParams();
+
+  const document_id_str = searchParams.get("document_id");
 
   const [createResponse, setCreateResponse] = useState<any>();
   const { loggedInAs } = useLoggedInAs();

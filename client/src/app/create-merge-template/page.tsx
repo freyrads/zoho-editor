@@ -15,7 +15,9 @@ export default function Preview() {
   if (Number.isNaN(document_id)) return <h1>Invalid document_id</h1>;
 
   const handleGo = () => {
-    router.push(`/create-merge-template/${document_id}/${filename}`);
+    router.push(
+      `/create-merge-template/${filename}?document_id=${document_id}`,
+    );
   };
 
   return (
