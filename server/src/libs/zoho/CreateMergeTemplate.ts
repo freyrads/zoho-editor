@@ -79,14 +79,14 @@ class CreateMergeTemplate {
       // const fileStream = fs.readFileSync(filePath);
       // const streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
 
-      const filePath = `${
-        inTemplateFolder
-          ? process.env.TEMPLATE_DOCUMENT_FOLDER
-          : process.env.DOCUMENT_FOLDER
-      }/${filename}`;
-      const streamWrapper = new StreamWrapper(null, null, filePath);
+      // const filePath = `${
+      //   inTemplateFolder
+      //     ? process.env.TEMPLATE_DOCUMENT_FOLDER
+      //     : process.env.DOCUMENT_FOLDER
+      // }/${filename}`;
+      // const streamWrapper = new StreamWrapper(null, null, filePath);
 
-      templateParameters.setDocument(streamWrapper);
+      // templateParameters.setDocument(streamWrapper);
 
       // const jsonFileName = 'candidates.json';
       // const jsonFilePath = './sample_documents/candidates.json';
@@ -96,16 +96,16 @@ class CreateMergeTemplate {
       // jsonFileStream.push(mergeContent);
       // jsonFileStream.push(null);
 
-      const jsonStreamWrapper = new StreamWrapper(
-        // mergeContentName,
-        // jsonFileStream,
-        // jsonFilePath,
-        null,
-        null,
-        'amelia.json',
-      );
+      // const jsonStreamWrapper = new StreamWrapper(
+      //   // mergeContentName,
+      //   // jsonFileStream,
+      //   // jsonFilePath,
+      //   null,
+      //   null,
+      //   'amelia.json',
+      // );
 
-      templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
+      // templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
 
       const documentInfo = new DocumentInfo();
 
