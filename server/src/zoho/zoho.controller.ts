@@ -98,27 +98,58 @@ export class ZohoController {
   async getCreate(
     @Response() response: express.Response,
     @Query('user_id') user_id: string,
-    @Query('is_merge_template')
-    is_merge_template?: string,
     @Query('filename')
     filename?: string,
+    @Query('is_merge_template')
+    is_merge_template?: string,
 
     @Query('merge_document_id') merge_document_id?: string,
-    @Query('merge_filename')
-    merge_filename?: string,
   ): Promise<void> {
     console.log({
       user_id,
       is_merge_template,
       filename,
       merge_document_id,
-      merge_filename,
+      // merge_filename,
     });
 
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
       console.error({ user_id });
       throw new HttpException('Invalid user_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const isMergeTemplate = ['1', 'true', 't'].includes(
+      is_merge_template?.toLowerCase() as string,
+    );
+
+    let docFilename: string = createNewZohoDocId();
+
+    if (isMergeTemplate) {
+      const mergeDocumentId = merge_document_id?.length
+        ? parseInt(merge_document_id)
+        : NaN;
+
+      if (Number.isNaN(mergeDocumentId)) {
+        console.error({ merge_document_id: mergeDocumentId });
+        throw new HttpException(
+          'Invalid merge_document_id',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const baseDocument =
+        await this.appService.getDocumentById(mergeDocumentId);
+
+      if (!baseDocument) {
+        console.error({ baseDocument });
+        throw new HttpException(
+          'Invalid merge_document_id',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      docFilename = baseDocument.filename;
     }
 
     const user = await this.appService.getUserById(uid);
@@ -135,14 +166,12 @@ export class ZohoController {
 
     console.log({ filename: oriFname, sanitizedFilename: filename });
 
-    const isMergeTemplate = ['1', 'true', 't'].includes(
-      is_merge_template?.toLowerCase() as string,
-    );
-
     const redirectPath = isMergeTemplate ? 'create-merge-template' : 'create';
 
     if (!oriFname) {
-      return response.redirect(`/${redirectPath}/${filename}`);
+      return response.redirect(
+        `/${redirectPath}/${filename}?document_id=${merge_document_id}`,
+      );
     }
 
     const userName = user.name;
@@ -161,7 +190,7 @@ export class ZohoController {
         documentId,
         userName,
         userId: String(user.id),
-        filename,
+        filename: isMergeTemplate ? docFilename : filename,
         /*
         {\"data\":[{\"Judul\":\"Amelia\",\"Keterangan\":\"amelia@zylker.com\",\"Deskripsi\":\"Deskripsi 1\"},{\"Judul\":\"Amelia No. 2\",\"Keterangan\":\"amelia2@zylker.com\",\"Deskripsi\":\"Deskripsi 2\"}]}
         */
@@ -190,7 +219,7 @@ export class ZohoController {
           ],
         }),
         mergeContentName: 'amelia.json',
-        newFilename: merge_filename as string,
+        newFilename: isMergeTemplate ? (filename as string) : '',
       };
     // : {
     //     documentId,

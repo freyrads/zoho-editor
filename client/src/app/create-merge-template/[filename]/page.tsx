@@ -10,8 +10,6 @@ export default function CreateMergeTemplate() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const document_id_str = searchParams.get("document_id");
-
   const [createResponse, setCreateResponse] = useState<any>();
   const { loggedInAs } = useLoggedInAs();
   console.log(loggedInAs);
@@ -35,6 +33,7 @@ export default function CreateMergeTemplate() {
         user_id: String(userId!),
         filename: filename as string,
         is_merge_template: true,
+        merge_document_id: document_id,
       });
 
       console.log({ data });
@@ -57,6 +56,12 @@ export default function CreateMergeTemplate() {
 
     execCreate();
   }, [shouldCreateDoc]);
+
+  const document_id_str = searchParams.get("document_id");
+
+  const document_id = document_id_str?.length ? parseInt(document_id_str) : NaN;
+
+  if (Number.isNaN(document_id)) return <h1>Invalid document_id</h1>;
 
   if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
