@@ -96,16 +96,16 @@ class CreateMergeTemplate {
       // jsonFileStream.push(mergeContent);
       // jsonFileStream.push(null);
 
-      // const jsonStreamWrapper = new StreamWrapper(
-      //   // mergeContentName,
-      //   // jsonFileStream,
-      //   // jsonFilePath,
-      //   null,
-      //   null,
-      //   'amelia.json',
-      // );
+      const jsonStreamWrapper = new StreamWrapper(
+        // mergeContentName,
+        // jsonFileStream,
+        // jsonFilePath,
+        null,
+        null,
+        'amelia.json',
+      );
 
-      // templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
+      templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
 
       const documentInfo = new DocumentInfo();
 
