@@ -60,7 +60,7 @@ class MergeAndDownload {
       //   'https://demo.office-integrator.com/zdocs/OfferLetter.zdoc',
       // );
       else {
-        const filePath = process.env.TEMPLATE_DOCUMENT_FOLDER + filename;
+        const filePath = process.env.DOCUMENT_FOLDER + filename;
 
         // TODO: handle error
         const fileStream = fs.readFileSync(filePath);

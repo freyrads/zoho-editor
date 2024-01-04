@@ -451,7 +451,7 @@ POST :id/save:
   @UseInterceptors(
     FileInterceptor('content', {
       storage: diskStorage({
-        destination: process.env.TEMPLATE_DOCUMENT_FOLDER,
+        destination: process.env.DOCUMENT_FOLDER,
         filename: (req, file, cb) => {
           console.log({ req, file });
 

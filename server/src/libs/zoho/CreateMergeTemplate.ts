@@ -79,11 +79,7 @@ class CreateMergeTemplate {
       // const fileStream = fs.readFileSync(filePath);
       // const streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
 
-      const filePath = `${
-        inTemplateFolder
-          ? process.env.TEMPLATE_DOCUMENT_FOLDER
-          : process.env.DOCUMENT_FOLDER
-      }/${filename}`;
+      const filePath = `${process.env.DOCUMENT_FOLDER}/${filename}`;
       const streamWrapper = new StreamWrapper(null, null, filePath);
 
       templateParameters.setDocument(streamWrapper);
