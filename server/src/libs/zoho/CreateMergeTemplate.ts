@@ -33,6 +33,7 @@ interface ICreateMergeTemplateDocumentParams {
    */
   mergeContent: string;
   mergeContentName: string;
+  newFilename: string;
   // mergeFilename: string;
 }
 
@@ -44,6 +45,7 @@ class CreateMergeTemplate {
     filename,
     mergeContent, // mergeFilename,
     mergeContentName,
+    newFilename,
   }: ICreateMergeTemplateDocumentParams) {
     console.log('CREATE MERGE TEMPLATE DOCUMENT: vvvvvvvvvvvv');
 
@@ -54,6 +56,7 @@ class CreateMergeTemplate {
       filename,
       mergeContent,
       mergeContentName,
+      newFilename,
     });
 
     try {
@@ -98,7 +101,7 @@ class CreateMergeTemplate {
 
       //Time value used to generate unique document every time. You can replace based on your application.
       documentInfo.setDocumentId(documentId);
-      documentInfo.setDocumentName(filename);
+      documentInfo.setDocumentName(newFilename);
 
       templateParameters.setDocumentInfo(documentInfo);
 
@@ -144,7 +147,7 @@ class CreateMergeTemplate {
       permissions.set('review.comment', true);
       permissions.set('review.changes.resolve', true);
       permissions.set('collab.chat', true);
-      permissions.set('document.pausecollaboration', true);
+      permissions.set('document.pausecollaboration', false);
       permissions.set('document.fill', true);
 
       templateParameters.setPermissions(permissions);

@@ -99,14 +99,20 @@ export class ZohoController {
     @Response() response: express.Response,
     @Query('user_id') user_id: string,
     @Query('is_merge_template')
-    is_merge_template: string,
+    is_merge_template?: string,
     @Query('filename')
     filename?: string,
+
+    @Query('merge_document_id') merge_document_id?: string,
+    @Query('merge_filename')
+    merge_filename?: string,
   ): Promise<void> {
     console.log({
       user_id,
       is_merge_template,
       filename,
+      merge_document_id,
+      merge_filename,
     });
 
     const uid = user_id?.length ? parseInt(user_id) : NaN;
@@ -130,7 +136,7 @@ export class ZohoController {
     console.log({ filename: oriFname, sanitizedFilename: filename });
 
     const isMergeTemplate = ['1', 'true', 't'].includes(
-      is_merge_template?.toLowerCase(),
+      is_merge_template?.toLowerCase() as string,
     );
 
     const redirectPath = isMergeTemplate ? 'create-merge-template' : 'create';
@@ -184,6 +190,7 @@ export class ZohoController {
           ],
         }),
         mergeContentName: 'amelia.json',
+        newFilename: merge_filename as string,
       };
     // : {
     //     documentId,

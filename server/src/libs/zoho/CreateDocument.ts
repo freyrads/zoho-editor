@@ -107,7 +107,7 @@ class CreateDocument {
       permissions.set('review.comment', true);
       permissions.set('review.changes.resolve', true);
       permissions.set('collab.chat', true);
-      permissions.set('document.pausecollaboration', true);
+      permissions.set('document.pausecollaboration', false);
       permissions.set('document.fill', true);
 
       createDocumentParameters.setPermissions(permissions);
