@@ -375,8 +375,22 @@ POST :id/save:
       });
 
       console.log({ createdDoc });
+      return;
     }
-    // else update?
+
+    // else update
+    const updatedDoc = await this.appService.updateDocument({
+      where: {
+        id: existingDoc.id,
+      },
+      data: {
+        file_data: JSON.stringify(content),
+        // zoho_document_id: params.id,
+        filename: content.filename,
+      },
+    });
+
+    console.log({ updatedDoc });
   }
 
   @Post('sessions/:id/delete')

@@ -27,6 +27,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.document.create(params);
   }
 
+  async updateDocument(
+    params: Parameters<(typeof this)['document']['update']>[0],
+  ) {
+    return this.document.update(params);
+  }
+
   async createZohoSession(
     params: Parameters<(typeof this)['zohoSession']['create']>[0],
   ) {
