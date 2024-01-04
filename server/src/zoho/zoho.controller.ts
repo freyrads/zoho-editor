@@ -162,7 +162,7 @@ export class ZohoController {
 
     filename = filename
       ? decodeURIComponent(filename)
-      : `Untitled-${new Date().valueOf()}.docx`;
+      : `Untitled-${new Date().valueOf()}`;
 
     console.log({ filename: oriFname, sanitizedFilename: filename });
 

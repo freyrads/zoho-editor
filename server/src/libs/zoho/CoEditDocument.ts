@@ -89,7 +89,7 @@ class CoEditDocument {
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
       callbackSettings.setRetries(3);
-      callbackSettings.setSaveFormat('docx');
+      callbackSettings.setSaveFormat('zdoc');
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
       // callbackSettings.setSaveUrl(

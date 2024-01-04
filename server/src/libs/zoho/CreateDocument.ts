@@ -125,7 +125,7 @@ class CreateDocument {
       callbackSettings.setSaveUrlParams(saveUrlParams);
       // callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
       callbackSettings.setRetries(3);
-      callbackSettings.setSaveFormat('docx');
+      callbackSettings.setSaveFormat('zdoc');
       callbackSettings.setHttpMethodType('post');
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(

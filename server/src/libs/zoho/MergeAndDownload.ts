@@ -73,7 +73,7 @@ class MergeAndDownload {
       // );
 
       // parameters.setPassword('***');
-      parameters.setOutputFormat('docx');
+      parameters.setOutputFormat('zdoc');
 
       parameters.setMergeData(mergeContent);
 
