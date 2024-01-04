@@ -28,13 +28,11 @@ export default function CreateMergeTemplate() {
     try {
       loadingRef.current = true;
 
-      const data = await createDocument(
-        {
-          user_id: String(userId!),
-          filename: filename as string,
-        },
-        true,
-      );
+      const data = await createDocument({
+        user_id: String(userId!),
+        filename: filename as string,
+        is_merge_template: true,
+      });
 
       console.log({ data });
 
@@ -45,7 +43,7 @@ export default function CreateMergeTemplate() {
       setCreateResponse(data);
       setSrc(documentUrl);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       loadingRef.current = false;
     }

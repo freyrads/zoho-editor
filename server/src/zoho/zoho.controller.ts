@@ -23,6 +23,7 @@ import {
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
+import CreateMergeTemplate from 'src/libs/zoho/CreateMergeTemplate';
 
 function createNewZohoDocId() {
   return '' + new Date().getTime();
@@ -97,9 +98,17 @@ export class ZohoController {
   async getCreate(
     @Response() response: express.Response,
     @Query('user_id') user_id: string,
+    @Query('is_merge_template')
+    is_merge_template: string,
     @Query('filename')
     filename?: string,
   ): Promise<void> {
+    console.log({
+      user_id,
+      is_merge_template,
+      filename,
+    });
+
     const uid = user_id?.length ? parseInt(user_id) : NaN;
     if (Number.isNaN(uid)) {
       console.error({ user_id });
@@ -120,8 +129,14 @@ export class ZohoController {
 
     console.log({ filename: oriFname, sanitizedFilename: filename });
 
+    const isMergeTemplate = ['1', 'true', 't'].includes(
+      is_merge_template?.toLowerCase(),
+    );
+
+    const redirectPath = isMergeTemplate ? 'create-merge-template' : 'create';
+
     if (!oriFname) {
-      return response.redirect(`/create/${filename}`);
+      return response.redirect(`/${redirectPath}/${filename}`);
     }
 
     const userName = user.name;
@@ -133,6 +148,16 @@ export class ZohoController {
       userId: String(user.id),
       filename,
     });
+
+    // const res: IGetCreateResponse = await (isMergeTemplate
+    //   ? CreateMergeTemplate
+    //   : CreateDocument
+    // ).execute({
+    //   documentId,
+    //   userName,
+    //   userId: String(user.id),
+    //   filename,
+    // });
 
     console.log({ res });
 

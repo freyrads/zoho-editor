@@ -24,16 +24,10 @@ export async function getDocument(params: IGetDocumentParams) {
   });
 }
 
-export async function createDocument(
-  params: ICreateDocumentParams,
-  isMergeTemplate?: boolean,
-) {
-  return axios.get<ICreateDocumentResponse>(
-    `${API_URL}/zoho/create${isMergeTemplate ? "-merge-template" : ""}`,
-    {
-      params,
-    },
-  );
+export async function createDocument(params: ICreateDocumentParams) {
+  return axios.get<ICreateDocumentResponse>(`${API_URL}/zoho/create`, {
+    params,
+  });
 }
 
 export async function getAllDocuments() {

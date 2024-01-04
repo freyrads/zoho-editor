@@ -42,7 +42,7 @@ export default function Create() {
       setCreateResponse(data);
       setSrc(documentUrl);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       loadingRef.current = false;
     }

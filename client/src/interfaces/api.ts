@@ -29,6 +29,7 @@ export interface ICreateDocumentResponse {
 export interface ICreateDocumentParams {
   user_id: string;
   filename?: string;
+  is_merge_template?: boolean;
 }
 
 export type IGetAllDocumentResponse = any;
