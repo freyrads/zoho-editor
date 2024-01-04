@@ -47,10 +47,10 @@ interface IGetCreateResponse {
   keyModified: {}; // ?
 }
 
-type IGetEditResponse = any;
+// type IGetEditResponse = any;
 
-const previewCache = new Map<string, IGetPreviewResponse>();
-const editCache = new Map<string, IGetEditResponse>();
+// const previewCache = new Map<string, IGetPreviewResponse>();
+// const editCache = new Map<string, IGetEditResponse>();
 
 @Controller('zoho')
 export class ZohoController {
@@ -67,11 +67,11 @@ export class ZohoController {
       throw new HttpException('Invalid document_id', HttpStatus.BAD_REQUEST);
     }
 
-    const cached = previewCache.get(document_id);
+    // const cached = previewCache.get(document_id);
 
-    if (cached) {
-      return cached;
-    }
+    // if (cached) {
+    //   return cached;
+    // }
 
     // TODO: find from db first if document already has session exist
     const savedDoc = await this.appService.getDocumentById(docId);
@@ -89,7 +89,7 @@ export class ZohoController {
     console.log({ res });
 
     // save session to cache and db(TODO)
-    previewCache.set(document_id, res);
+    // previewCache.set(document_id, res);
 
     return res;
   }
@@ -183,7 +183,6 @@ export class ZohoController {
   // async getCreate(@Param() params: any): Promise<> {
   // }
 
-  // preview endpoint
   @Get('edit')
   async getEdit(
     @Query('user_id') user_id: string,
@@ -213,13 +212,13 @@ export class ZohoController {
     if (!savedDoc)
       throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
 
-    const cacheId = `${savedDoc.id}/${user.id}`;
+    // const cacheId = `${savedDoc.id}/${user.id}`;
 
-    const cached = editCache.get(cacheId);
+    // const cached = editCache.get(cacheId);
 
-    if (cached) {
-      return cached;
-    }
+    // if (cached) {
+    //   return cached;
+    // }
 
     // TODO: find from db first if document already has session exist
 
@@ -272,7 +271,7 @@ export class ZohoController {
     });
 
     // save session to cache and db(TODO)
-    editCache.set(cacheId, res);
+    // editCache.set(cacheId, res);
 
     return res;
   }
