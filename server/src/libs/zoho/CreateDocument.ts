@@ -18,7 +18,7 @@ const CreateDocumentParameters =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters').CreateDocumentParameters;
 const InvaildConfigurationException =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception').InvaildConfigurationException;
-const V1Operations =
+const OfficeIntegratorSDKOperations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
 interface ICreateDocumentParams {
@@ -45,7 +45,7 @@ class CreateDocument {
     });
 
     try {
-      const sdkOperations = new V1Operations();
+      const sdkOperations = new OfficeIntegratorSDKOperations();
       const createDocumentParameters = new CreateDocumentParameters();
 
       const documentInfo = new DocumentInfo();

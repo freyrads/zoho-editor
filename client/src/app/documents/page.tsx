@@ -24,6 +24,10 @@ export default function Documents() {
     router.push("/create");
   };
 
+  const handleCreateMergeTemplate = () => {
+    router.push("/create-merge-template");
+  };
+
   const handlePreview = (doc: any) => {
     console.log({ doc });
 
@@ -47,6 +51,9 @@ export default function Documents() {
       <div className="flex flex-col gap-[12px]">
         <button className="btn-look" onClick={handleCreate}>
           + Create
+        </button>
+        <button className="btn-look" onClick={handleCreateMergeTemplate}>
+          + Create Merge Template
         </button>
         <button className="btn-look" onClick={handleUpload}>
           + Upload

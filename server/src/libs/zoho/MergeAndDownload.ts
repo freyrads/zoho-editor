@@ -124,6 +124,8 @@ class MergeAndDownload {
                 '\nCheck merged output file in file path - ',
                 outputFilePath,
               );
+
+              // TODO: insert new document to db
             }
           } else if (
             writerResponseObject instanceof InvaildConfigurationException

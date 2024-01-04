@@ -4,3 +4,4 @@ export * from './initializeSdk';
 export { default as CoEditDocument } from './CoEditDocument';
 export { default as EditDocument } from './EditDocument';
 export { default as MergeAndDownload } from './MergeAndDownload';
+export { default as CreateMergeTemplate } from './CreateMergeTemplate';

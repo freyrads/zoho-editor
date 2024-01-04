@@ -2,89 +2,133 @@ const fs = require('fs');
 const StreamWrapper =
   require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
 const Margin =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/margin').Margin;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin').Margin;
 const UserInfo =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info').UserInfo;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info').UserInfo;
 const DocumentInfo =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info').DocumentInfo;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info').DocumentInfo;
 const EditorSettings =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/editor_settings').EditorSettings;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/editor_settings').EditorSettings;
 const DocumentDefaults =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults').DocumentDefaults;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_defaults').DocumentDefaults;
 const CallbackSettings =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings').CallbackSettings;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings').CallbackSettings;
 const CreateDocumentResponse =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response').CreateDocumentResponse;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response').CreateDocumentResponse;
 const MailMergeTemplateParameters =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/mail_merge_template_parameters').MailMergeTemplateParameters;
-const OfficeIntegratorSDKOperations =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations').OfficeIntegratorSDKOperations;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/mail_merge_template_parameters').MailMergeTemplateParameters;
 const InvaildConfigurationException =
-  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception').InvaildConfigurationException;
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception').InvaildConfigurationException;
+const OfficeIntegratorSDKOperations =
+  require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
+import { Readable } from 'stream';
+
+interface ICreateMergeTemplateDocumentParams {
+  userName: string;
+  documentId: string;
+  userId: string;
+  filename: string;
+  /*
+   * JSON string
+   */
+  mergeContent: string;
+  mergeContentName: string;
+  // mergeFilename: string;
+}
 
 class CreateMergeTemplate {
-  static async execute() {
+  static async execute({
+    userName,
+    documentId,
+    userId,
+    filename,
+    mergeContent, // mergeFilename,
+    mergeContentName,
+  }: ICreateMergeTemplateDocumentParams) {
+    console.log('CREATE MERGE TEMPLATE DOCUMENT: vvvvvvvvvvvv');
+
+    console.log({
+      userName,
+      documentId,
+      userId,
+      filename,
+      mergeContent,
+      mergeContentName,
+    });
+
     try {
-      var sdkOperations = new OfficeIntegratorSDKOperations();
-      var templateParameters = new MailMergeTemplateParameters();
+      const sdkOperations = new OfficeIntegratorSDKOperations();
+      const templateParameters = new MailMergeTemplateParameters();
 
       //Either use url as document source or attach the document in request body and use below methods
-      templateParameters.setUrl(
-        'https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx',
+      // templateParameters.setUrl(
+      //   'https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx',
+      // );
+      // templateParameters.setMergeDataJsonUrl(
+      //   'https://demo.office-integrator.com/data/candidates.json',
+      // );
+
+      // const fileName = "OfferLetter.zdoc";
+      // const filePath = "./sample_documents/OfferLetter.zdoc";
+      // const fileStream = fs.readFileSync(filePath);
+      // const streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
+
+      const filePath = `${process.env.TEMPLATE_DOCUMENT_FOLDER}/${filename}`;
+      const streamWrapper = new StreamWrapper(null, null, filePath);
+
+      templateParameters.setDocument(streamWrapper);
+
+      // const jsonFileName = 'candidates.json';
+      // const jsonFilePath = './sample_documents/candidates.json';
+      // const jsonFileStream = fs.readFileSync(jsonFilePath);
+
+      const jsonFileStream = new Readable();
+      jsonFileStream.push(mergeContent);
+      jsonFileStream.push(null);
+
+      const jsonStreamWrapper = new StreamWrapper(
+        mergeContentName,
+        jsonFileStream,
+        // jsonFilePath,
       );
-      templateParameters.setMergeDataJsonUrl(
-        'https://demo.office-integrator.com/data/candidates.json',
-      );
 
-      // var fileName = "OfferLetter.zdoc";
-      // var filePath = "./sample_documents/OfferLetter.zdoc";
-      // var fileStream = fs.readFileSync(filePath);
-      // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
-      // var streamWrapper = new StreamWrapper(null, null, filePath)
+      templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
 
-      // templateParameters.setDocument(streamWrapper);
-
-      // var jsonFileName = "candidates.json";
-      // var jsonFilePath = "./sample_documents/candidates.json";
-      // var jsonFileStream = fs.readFileSync(jsonFilePath);
-      // var jsonStreamWrapper = new StreamWrapper(jsonFileName, jsonFileStream, jsonFilePath);
-
-      // templateParameters.setMergeDataJsonContent(jsonStreamWrapper);
-
-      var documentInfo = new DocumentInfo();
+      const documentInfo = new DocumentInfo();
 
       //Time value used to generate unique document every time. You can replace based on your application.
-      documentInfo.setDocumentId('' + new Date().getTime());
-      documentInfo.setDocumentName('Graphic-Design-Proposal.docx');
+      documentInfo.setDocumentId(documentId);
+      documentInfo.setDocumentName(filename);
 
       templateParameters.setDocumentInfo(documentInfo);
 
-      var userInfo = new UserInfo();
+      const userInfo = new UserInfo();
 
-      userInfo.setUserId('1000');
-      userInfo.setDisplayName('Amelia');
+      userInfo.setUserId(userId);
+      userInfo.setDisplayName(userName);
 
       templateParameters.setUserInfo(userInfo);
 
-      var margin = new Margin();
+      const margin = new Margin();
 
       margin.setTop('2in');
       margin.setBottom('2in');
       margin.setLeft('2in');
       margin.setRight('2in');
 
-      var documentDefaults = new DocumentDefaults();
+      const documentDefaults = new DocumentDefaults();
 
-      documentDefaults.setFontName('Arial');
       documentDefaults.setFontSize(12);
-      documentDefaults.setOrientation('landscape');
       documentDefaults.setPaperSize('A4');
+      documentDefaults.setFontName('Arial');
       documentDefaults.setTrackChanges('enabled');
+      // documentDefaults.setOrientation('landscape');
+
       documentDefaults.setMargin(margin);
 
       templateParameters.setDocumentDefaults(documentDefaults);
 
-      var editorSettings = new EditorSettings();
+      const editorSettings = new EditorSettings();
 
       editorSettings.setUnit('mm');
       editorSettings.setLanguage('en');
@@ -92,39 +136,42 @@ class CreateMergeTemplate {
 
       templateParameters.setEditorSettings(editorSettings);
 
-      var permissions = new Map();
+      const permissions = new Map();
 
       permissions.set('document.export', true);
-      permissions.set('document.print', false);
+      permissions.set('document.print', true);
       permissions.set('document.edit', true);
-      permissions.set('review.comment', false);
-      permissions.set('review.changes.resolve', false);
-      permissions.set('collab.chat', false);
-      permissions.set('document.pausecollaboration', false);
-      permissions.set('document.fill', false);
+      permissions.set('review.comment', true);
+      permissions.set('review.changes.resolve', true);
+      permissions.set('collab.chat', true);
+      permissions.set('document.pausecollaboration', true);
+      permissions.set('document.fill', true);
 
       templateParameters.setPermissions(permissions);
 
-      var callbackSettings = new CallbackSettings();
-      var saveUrlParams = new Map();
+      const callbackSettings = new CallbackSettings();
+      const saveUrlParams = new Map();
 
-      saveUrlParams.set('auth_token', '1234');
-      saveUrlParams.set('id', '123131');
+      saveUrlParams.set('author_id', userId);
+      saveUrlParams.set('is_merge_template', '1');
 
       callbackSettings.setSaveUrlParams(saveUrlParams);
 
+      callbackSettings.setRetries(3);
+      callbackSettings.setSaveFormat('docx');
       callbackSettings.setHttpMethodType('post');
-      callbackSettings.setRetries(1);
       callbackSettings.setTimeout(100000);
       callbackSettings.setSaveUrl(
-        'https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286',
+        // 'https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286',
+        `${process.env.SERVER_URL}/zoho/${documentId}/save-merge-template`,
       );
-      callbackSettings.setSaveFormat('pdf');
 
       templateParameters.setCallbackSettings(callbackSettings);
 
-      var responseObject =
+      const responseObject =
         await sdkOperations.createMailMergeTemplate(templateParameters);
+
+      console.log({ responseObject });
 
       if (responseObject != null) {
         //Get the status code from response
@@ -168,9 +215,13 @@ class CreateMergeTemplate {
             console.log('\nRequest not completed successfullly');
           }
         }
+
+        return writerResponseObject;
       }
     } catch (error) {
       console.log('\nException while running sample code', error);
+    } finally {
+      console.log('CREATE MERGE TEMPLATE DOCUMENT: ^^^^^^^^^^^^');
     }
   }
 }

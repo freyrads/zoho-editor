@@ -20,10 +20,10 @@ import {
   PreviewDocument,
   EditDocument,
   // CoEditDocument,
+  CreateMergeTemplate,
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
-// import CreateMergeTemplate from 'src/libs/zoho/CreateMergeTemplate';
 
 function createNewZohoDocId() {
   return '' + new Date().getTime();
@@ -142,22 +142,60 @@ export class ZohoController {
     const userName = user.name;
     const documentId = createNewZohoDocId();
 
-    const res: IGetCreateResponse = await CreateDocument.execute({
-      documentId,
-      userName,
-      userId: String(user.id),
-      filename,
-    });
-
-    // const res: IGetCreateResponse = await (isMergeTemplate
-    //   ? CreateMergeTemplate
-    //   : CreateDocument
-    // ).execute({
+    // const res: IGetCreateResponse = await CreateDocument.execute({
     //   documentId,
     //   userName,
     //   userId: String(user.id),
     //   filename,
     // });
+
+    const createParams =
+      // isMergeTemplate?
+      {
+        documentId,
+        userName,
+        userId: String(user.id),
+        filename,
+        /*
+        {\"data\":[{\"Judul\":\"Amelia\",\"Keterangan\":\"amelia@zylker.com\",\"Deskripsi\":\"Deskripsi 1\"},{\"Judul\":\"Amelia No. 2\",\"Keterangan\":\"amelia2@zylker.com\",\"Deskripsi\":\"Deskripsi 2\"}]}
+        */
+        mergeContent: JSON.stringify({
+          data: [
+            {
+              Judul: 'Amelia',
+              Keterangan: 'amelia@zylker.com',
+              Deskripsi: 'Deskripsi 1',
+            },
+            {
+              Judul: 'Amelia No. 2',
+              Keterangan: 'amelia2@zylker.com',
+              Deskripsi: 'Deskripsi 2',
+            },
+            {
+              Judul: 'Amelia No. 3',
+              Keterangan: 'amelia3@zylker.com',
+              Deskripsi: 'Deskripsi 3',
+            },
+            {
+              Judul: 'Amelia No. 4',
+              Keterangan: 'amelia4@zylker.com',
+              Deskripsi: 'Deskripsi 4',
+            },
+          ],
+        }),
+        mergeContentName: 'amelia.json',
+      };
+    // : {
+    //     documentId,
+    //     userName,
+    //     userId: String(user.id),
+    //     filename,
+    //   };
+
+    const res: IGetCreateResponse = await (isMergeTemplate
+      ? CreateMergeTemplate
+      : CreateDocument
+    ).execute(createParams);
 
     console.log({ res });
 
@@ -252,7 +290,8 @@ export class ZohoController {
 
     // if not in db, create new zoho session
     const res = await (existingEditSession && shouldCoEdit
-      ? EditDocument //CoEditDocument
+      ? // should be switched based on permission, or we can set different permission for the same edit/co-edit op
+        EditDocument //CoEditDocument
       : EditDocument
     ).execute(executeParams);
 
@@ -296,7 +335,7 @@ export class ZohoController {
     @Headers() headers: any,
     @UploadedFile() content: Express.Multer.File,
   ) {
-    console.log('POST :id/save:');
+    console.log('POST :id/save: VVVVVVVVVVVVVVVVVVVV');
     console.log({ params, body, queries, headers, content });
     /*
 POST :id/save:                                                                                  
@@ -375,6 +414,7 @@ POST :id/save:
       });
 
       console.log({ createdDoc });
+      console.log('POST :id/save: ^^^^^^^^^^^^^^^^^^^^');
       return;
     }
 
@@ -391,6 +431,93 @@ POST :id/save:
     });
 
     console.log({ updatedDoc });
+    console.log('POST :id/save: ^^^^^^^^^^^^^^^^^^^^');
+  }
+
+  @Post(':id/save-merge-template')
+  @UseInterceptors(
+    FileInterceptor('content', {
+      storage: diskStorage({
+        destination: process.env.TEMPLATE_DOCUMENT_FOLDER,
+        filename: (req, file, cb) => {
+          console.log({ req, file });
+
+          cb(null, file.originalname);
+        },
+      }),
+    }),
+  )
+  async postMergeTemplateDocumentSave(
+    @Param() params: any,
+    @Body() body: any,
+    @Query() queries: any,
+    @Headers() headers: any,
+    @UploadedFile() content: Express.Multer.File,
+  ) {
+    console.log('POST :id/save-merge-template: VVVVVVVVVVVVVVVVVVVV');
+    console.log({ params, body, queries, headers, content });
+    /*
+     */
+
+    const existingDoc = await this.appService.getDocumentByZohoDocId(params.id);
+
+    console.log({ existingDoc });
+
+    // TODO: update/insert document entry in db
+    if (!existingDoc) {
+      const auid = !!body?.author_id?.length ? parseInt(body.author_id) : NaN;
+      if (Number.isNaN(auid)) {
+        const err = new HttpException(
+          'Invalid author_id',
+          HttpStatus.BAD_REQUEST,
+        );
+        console.error(err);
+        throw err;
+      }
+
+      const user = await this.appService.getUserById(auid);
+
+      console.log({ user });
+
+      if (!user) {
+        const err = new HttpException(
+          'Invalid author_id',
+          HttpStatus.BAD_REQUEST,
+        );
+        console.error(err);
+        throw err;
+      }
+
+      const createdDoc = await this.appService.createDocument({
+        data: {
+          file_data: JSON.stringify(content),
+          zoho_document_id: params.id,
+          filename: content.filename,
+          existing: false, //body.existing,
+          author_id: user.id,
+          is_template: true,
+        },
+      });
+
+      console.log({ createdDoc });
+      console.log('POST :id/save-merge-template: ^^^^^^^^^^^^^^^^^^^^');
+      return;
+    }
+
+    // else update
+    const updatedDoc = await this.appService.updateDocument({
+      where: {
+        id: existingDoc.id,
+      },
+      data: {
+        file_data: JSON.stringify(content),
+        // zoho_document_id: params.id,
+        filename: content.filename,
+      },
+    });
+
+    console.log({ updatedDoc });
+    console.log('POST :id/save-merge-template: ^^^^^^^^^^^^^^^^^^^^');
   }
 
   @Post('sessions/:id/delete')
