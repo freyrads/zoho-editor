@@ -19,11 +19,11 @@ import {
   CreateDocument,
   PreviewDocument,
   EditDocument,
-  CoEditDocument,
+  // CoEditDocument,
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
-import CreateMergeTemplate from 'src/libs/zoho/CreateMergeTemplate';
+// import CreateMergeTemplate from 'src/libs/zoho/CreateMergeTemplate';
 
 function createNewZohoDocId() {
   return '' + new Date().getTime();
@@ -252,7 +252,7 @@ export class ZohoController {
 
     // if not in db, create new zoho session
     const res = await (existingEditSession && shouldCoEdit
-      ? CoEditDocument
+      ? EditDocument //CoEditDocument
       : EditDocument
     ).execute(executeParams);
 

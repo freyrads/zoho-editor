@@ -76,9 +76,9 @@ class CoEditDocument {
       permissions.set('document.export', true);
       permissions.set('document.print', true);
       permissions.set('document.edit', true);
-      permissions.set('review.comment', false);
-      permissions.set('review.changes.resolve', false);
-      permissions.set('collab.chat', false);
+      permissions.set('review.comment', true);
+      permissions.set('review.changes.resolve', true);
+      permissions.set('collab.chat', true);
       permissions.set('document.pausecollaboration', false);
       permissions.set('document.fill', false);
 
