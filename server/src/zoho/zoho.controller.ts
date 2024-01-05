@@ -607,7 +607,7 @@ POST :id/save:
 
   @Post('documents/:id/delete')
   async postDocumentDelete(@Param('id') id: string) {
-    console.log('POST documents/:id/delete:');
+    console.log('POST documents/:id/delete: VVVVVVVVVVVVVVVVVVVV');
     console.log({ id });
 
     const idn = id?.length ? parseInt(id) : NaN;
@@ -657,12 +657,18 @@ POST :id/save:
 
     console.log({ resDeleteDocument });
 
-    // TODO: delete docx file in storage?
-    return {
+    const res = {
       deletedDocument: resDeleteDocument,
       deletedDocumentURLs,
       deletedSessions,
     };
+
+    console.log('POST documents/:id/delete: ^^^^^^^^^^^^^^^^^^^^');
+
+    console.log({ endpointRes: res });
+
+    // TODO: delete docx file in storage?
+    return res;
   }
 
   // @Post('documents/:id/sessions/delete')
