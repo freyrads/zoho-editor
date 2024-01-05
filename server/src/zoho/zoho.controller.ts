@@ -52,6 +52,26 @@ interface IGetCreateResponse {
 // const previewCache = new Map<string, IGetPreviewResponse>();
 // const editCache = new Map<string, IGetEditResponse>();
 
+interface ICallApiCreateOptions {
+  type?: 'sheet' | 'writer';
+  isMergeTemplate?: boolean;
+  createParams: any;
+}
+
+async function callApiCreate({
+  type,
+  isMergeTemplate,
+  createParams,
+}: ICallApiCreateOptions) {
+  if (type === 'sheet') {
+    return;
+  }
+
+  if (isMergeTemplate) return CreateMergeTemplate.execute(createParams);
+
+  return CreateDocument.execute(createParams);
+}
+
 @Controller('zoho')
 export class ZohoController {
   constructor(private readonly appService: AppService) {}
@@ -104,6 +124,8 @@ export class ZohoController {
     is_merge_template?: string,
 
     @Query('merge_document_id') merge_document_id?: string,
+
+    @Query('type') type?: 'sheet' | 'writer',
   ): Promise<void> {
     console.log({
       user_id,
@@ -170,7 +192,7 @@ export class ZohoController {
 
     if (!oriFname) {
       return response.redirect(
-        `/${redirectPath}/${filename}?document_id=${merge_document_id}`,
+        `/${redirectPath}/${filename}?document_id=${merge_document_id}&type={type}`,
       );
     }
 
@@ -196,7 +218,7 @@ export class ZohoController {
         */
         // mergeContent: JSON.stringify(),
         // mergeContentName: 'amelia.json',
-        newFilename: isMergeTemplate ? (filename as string) : '',
+        newFilename: isMergeTemplate ? filename : '',
       };
     // : {
     //     documentId,
@@ -205,10 +227,7 @@ export class ZohoController {
     //     filename,
     //   };
 
-    const res: IGetCreateResponse = await (isMergeTemplate
-      ? CreateMergeTemplate
-      : CreateDocument
-    ).execute(createParams);
+    const res: IGetCreateResponse = await callApiCreate({ isMergeTemplate });
 
     console.log({ res });
 

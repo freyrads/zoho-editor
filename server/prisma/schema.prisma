@@ -40,6 +40,8 @@ model Document {
   existing                      Boolean
   deleted                       Boolean            @default(false)
   zoho_sessions                 ZohoSession[]
+  // sheet or writer
+  doc_type                      String             @default("writer")
 }
 
 // represent user session
