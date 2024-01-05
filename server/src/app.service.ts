@@ -217,7 +217,12 @@ curl -X POST \
     console.log({ type, isMergeTemplate, createParams });
 
     if (type === 'sheet') {
-      return this.apiCreateSpreadSheet(createParams as ICreateDocumentParams);
+      const createSpreadsheetRes = await this.apiCreateSpreadSheet(
+        createParams as ICreateDocumentParams,
+      );
+
+      console.log({ createSpreadsheetRes });
+      return createSpreadsheetRes.data;
     }
 
     if (isMergeTemplate)

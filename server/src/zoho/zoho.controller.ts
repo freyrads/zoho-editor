@@ -40,6 +40,39 @@ interface IGetCreateResponse {
   sessionDeleteUrl: string;
   documentDeleteUrl: string;
   keyModified: {}; // ?
+
+  /**
+   * Sheet field
+   */
+  gridview_url: string;
+  /**
+   * Sheet field
+   */
+  save_url: string;
+  /**
+   * Sheet field
+   */
+  session_delete_url: string;
+  /**
+   * Sheet field
+   */
+  download_url: string;
+  /**
+   * Sheet field
+   */
+  session_id: string;
+  /**
+   * Sheet field
+   */
+  document_delete_url: string;
+  /**
+   * Sheet field
+   */
+  document_id: string;
+  /**
+   * Sheet field
+   */
+  document_url: string;
 }
 
 // type IGetEditResponse = any;
@@ -202,6 +235,8 @@ export class ZohoController {
     //     filename,
     //   };
 
+    const isTypeSheet = type === 'sheet';
+
     let res: IGetCreateResponse;
     try {
       res = await this.appService.callApiCreate({
@@ -214,18 +249,36 @@ export class ZohoController {
       return;
     }
 
+    // sheet res
+    /*
+gridview_url: 'https://api.office-integrator.com/sheet/officeapi/v1/7c92e8104911a8d0961611b13c8e4c935e9058f4fcf1601c56c2c529b5cbf8c4e79a33ee5162b35cfae0e71a06b580458119cc9593e4c4fde28a3e
+bb8f2138d2?zview=rgrid',     
+      save_url: 'https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet/7c92e8104911a8d0961611b13c8e4c935e9058f4fcf1601c56c2c529b5cbf8c4e79a33ee5162b35cfae0e71a06b580458119cc9593e4c4
+fde28a3ebb8f2138d2/save',        
+      session_delete_url: 'https://api.office-integrator.com/sheet/officeapi/v1/session/e0d62a556649af65c864c6a0177b3ab3c277649077e135d8c95ede6d41f3180708ec903684707e2b400c285d748d5643',      
+      download_url: 'https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet/7c92e8104911a8d0961611b13c8e4c935e9058f4fcf1601c56c2c529b5cbf8c4e79a33ee5162b35cfae0e71a06b580458119cc9593
+e4c4fde28a3ebb8f2138d2/download',   
+      session_id: 'e0d62a556649af65c864c6a0177b3ab3c277649077e135d8c95ede6d41f3180708ec903684707e2b400c285d748d5643',                                                                           
+      document_delete_url: 'https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet/1704424924391',                                                                                    
+      document_id: '1704424924391',                                                             
+      document_url: 'https://sheet.zoho.com/sheet/officeapi/v1/7c92e8104911a8d0961611b13c8e4c935e9058f4fcf1601c56c2c529b5cbf8c4e79a33ee5162b35cfae0e71a06b580458119cc9593e4c4fde28a3ebb8f2138d2'
+      */
+
     console.log({ res });
 
     const session_type: IZohoSessionType = 'create';
+
+    const docIdKey = isTypeSheet ? 'document_id' : 'documentId';
+    const sessionIdKey = isTypeSheet ? 'session_id' : 'sessionId';
 
     // save to db
     const createdSession = await this.appService.createZohoSession({
       data: {
         user_id: uid,
-        zoho_document_id: res.documentId,
+        zoho_document_id: res[docIdKey],
         session_data: JSON.stringify(res),
         session_type,
-        session_id: res.sessionId,
+        session_id: res[sessionIdKey],
       },
     });
 
