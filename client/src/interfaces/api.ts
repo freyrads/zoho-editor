@@ -29,7 +29,10 @@ export interface ICreateDocumentResponse {
 export interface ICreateDocumentParams {
   user_id: string;
   filename?: string;
+
   is_merge_template?: boolean;
+  merge_document_id?: number;
+
   type?: "sheet" | "writer";
 }
 
