@@ -1,15 +1,16 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
-  IApiCreateSpreadSheetParams,
+  // IApiCreateSpreadSheetParams,
   ICallApiCreateOptions,
   ICreateDocumentParams,
   ICreateMergeTemplateDocumentParams,
   IZohoSessionType,
 } from './interfaces/zoho';
 import axios from 'axios';
-import { createNewZohoDocId } from './utils';
+// import { createNewZohoDocId } from './utils';
 import { CreateDocument, CreateMergeTemplate } from './libs/zoho';
+import FormData from 'form-data';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -194,11 +195,14 @@ curl -X POST \
       }),
     );
 
+    console.log({ formData });
+
     return axios.post(
       `https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet`,
       formData,
       {
         headers: {
+          ...formData.getHeaders(),
           'Content-Type': 'multipart/form-data',
         },
       },
