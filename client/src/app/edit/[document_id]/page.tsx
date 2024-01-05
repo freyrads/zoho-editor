@@ -35,12 +35,12 @@ export default function Edit() {
 
       console.log({ data });
 
-      const { documentUrl } = data?.data ?? {};
+      const { documentUrl, document_url } = data?.data ?? {};
 
-      if (!documentUrl) return;
+      if (!documentUrl && !document_url) return;
 
       setCreateResponse(data);
-      setSrc(documentUrl);
+      setSrc(document_url ?? documentUrl);
     } catch (e) {
       console.error(e);
     } finally {
