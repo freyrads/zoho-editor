@@ -623,65 +623,64 @@ POST :id/save:
       throw new HttpException('Unknown document', HttpStatus.NOT_FOUND);
     }
 
-    // find all session connected to this doc
-    const sessions =
-      typeof dbDoc.zoho_document_id === 'string'
-        ? await this.appService.getZohoSessionsByZohoDocId(
-            dbDoc.zoho_document_id,
-          )
-        : [];
+    // find all session connected to this doc and delete
+    const deletedSessions = await this.appService.execDbDeleteZohoSessions(
+      dbDoc.zoho_document_id!,
+    );
 
-    let documentDeleteUrl: string;
+    const documentDeleteURLs: string[] = [];
+    for (const sess of deletedSessions) {
+      const {
+        // session_delete_url,
+        // sessionDeleteUrl,
+        documentDeleteUrl,
+        document_delete_url,
+      } = sess.jsonSessionData;
 
-    for (const sess of sessions) {
-      try {
-        const jsonSessionData = sess.session_data.length
-          ? JSON.parse(sess.session_data)
-          : {};
+      const currentDocumentDeleteUrl = document_delete_url ?? documentDeleteUrl;
 
-        // call DELETE sessionDeleteUrl zoho api
-
-        const { session_delete_url, sessionDeleteUrl } = jsonSessionData;
-
-        const url = session_delete_url ?? sessionDeleteUrl;
-
-        if (url) {
-          console.log('Deleting session:', sess);
-          await this.appService.apiDeleteSession(url);
-        }
-      } catch (e) {
-        console.error(e);
-        throw new HttpException(
-          'Error deleting session',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+      // set documentDeleteUrl
+      if (documentDeleteURLs.includes(currentDocumentDeleteUrl)) {
+        documentDeleteURLs.push(currentDocumentDeleteUrl);
       }
     }
 
+    const deletedDocumentURLs: string[] = [];
     // call DELETE documentDeleteUrl zoho api
-
-    const res = await this.appService.deleteDocumentById(idn);
-
-    // TODO: delete docx file in storage?
-    return res;
-  }
-
-  @Post('documents/:id/sessions/delete')
-  async postDocumentSessionsDelete(@Param('id') id: string) {
-    console.log('POST documents/:id/sessions/delete:');
-    console.log({ id });
-
-    const idn = id?.length ? parseInt(id) : NaN;
-
-    if (Number.isNaN(idn)) {
-      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+    for (const url of documentDeleteURLs) {
+      console.log('Deleting zoho document:', url);
+      await this.appService.apiDeleteDocument(url);
+      deletedDocumentURLs.push(url);
     }
 
-    // TODO: find sessions by document_id first to get all to be deleted session
-    // and call DELETE sessionDeleteUrl zoho api for each session
+    const resDeleteDocument = await this.appService.deleteDocumentById(idn);
 
-    const res = await this.appService.deleteSessionsByDocumentId(idn);
+    console.log({ resDeleteDocument });
 
-    return res;
+    // TODO: delete docx file in storage?
+    return {
+      deletedDocument: resDeleteDocument,
+      deletedDocumentURLs,
+      deletedSessions,
+    };
   }
+
+  // @Post('documents/:id/sessions/delete')
+  // async postDocumentSessionsDelete(@Param('id') id: string) {
+  //   console.log('POST documents/:id/sessions/delete:');
+  //   console.log({ id });
+
+  //   const idn = id?.length ? parseInt(id) : NaN;
+
+  //   if (Number.isNaN(idn)) {
+  //     throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+  //   }
+
+  //   // TODO: find sessions by document_id first to get all to be deleted session
+  //   // and call DELETE sessionDeleteUrl zoho api for each session
+
+  //   const res = await this.appService.deleteSessionsByDocumentId(idn);
+
+  //   return res;
+  // }
 }

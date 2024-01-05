@@ -51,17 +51,32 @@ export class AppService extends PrismaClient implements OnModuleInit {
   }
 
   async getDocuments() {
-    return this.document.findMany();
+    return this.document.findMany({
+      where: {
+        NOT: {
+          deleted: true,
+        },
+      },
+    });
   }
 
   async getZohoSessions() {
-    return this.zohoSession.findMany();
+    return this.zohoSession.findMany({
+      where: {
+        NOT: {
+          deleted: true,
+        },
+      },
+    });
   }
 
   async getZohoSessionsByZohoDocId(zoho_document_id: string) {
     return this.zohoSession.findMany({
       where: {
         zoho_document_id,
+        NOT: {
+          deleted: true,
+        },
       },
     });
   }
@@ -70,6 +85,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.document.findUnique({
       where: {
         id,
+        NOT: {
+          deleted: true,
+        },
       },
     });
   }
@@ -78,6 +96,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.document.findUnique({
       where: {
         zoho_document_id,
+        NOT: {
+          deleted: true,
+        },
       },
     });
   }
@@ -86,6 +107,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.document.findMany({
       where: {
         author_id: user_id,
+        NOT: {
+          deleted: true,
+        },
       },
     });
   }
@@ -94,6 +118,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.document.update({
       where: {
         id,
+        NOT: {
+          deleted: true,
+        },
       },
       data: {
         zoho_document_id,
@@ -111,30 +138,42 @@ export class AppService extends PrismaClient implements OnModuleInit {
         document_id,
         zoho_document_id,
         session_type,
+        NOT: {
+          deleted: true,
+        },
       },
     });
   }
 
   async deleteSessionById(id: number) {
-    return this.zohoSession.delete({
+    return this.zohoSession.update({
       where: {
         id,
+      },
+      data: {
+        deleted: true,
       },
     });
   }
 
   async deleteDocumentById(id: number) {
-    return this.document.delete({
+    return this.document.update({
       where: {
         id,
+      },
+      data: {
+        deleted: true,
       },
     });
   }
 
   async deleteSessionsByDocumentId(id: number) {
-    return this.zohoSession.deleteMany({
+    return this.zohoSession.updateMany({
       where: {
         document_id: id,
+      },
+      data: {
+        deleted: true,
       },
     });
   }
@@ -239,5 +278,70 @@ curl -X POST \
 
   async apiDeleteSession(url: string) {
     return axios.delete(appendURLApiKey(url));
+  }
+
+  async apiDeleteDocument(url: string) {
+    return axios.delete(appendURLApiKey(url));
+  }
+
+  async execDbDeleteZohoSessions(zoho_document_id?: string) {
+    const sessions =
+      typeof zoho_document_id === 'string'
+        ? await this.getZohoSessionsByZohoDocId(zoho_document_id)
+        : [];
+
+    const deletedSessions: ((typeof sessions)[number] & {
+      jsonSessionData: any;
+    })[] = [];
+
+    if (!deletedSessions.length) return [];
+
+    for (const sess of sessions as typeof deletedSessions) {
+      try {
+        const jsonSessionData = sess.session_data.length
+          ? JSON.parse(sess.session_data)
+          : {};
+
+        // call DELETE sessionDeleteUrl zoho api
+
+        const {
+          session_delete_url,
+          sessionDeleteUrl,
+          // documentDeleteUrl,
+          // document_delete_url,
+        } = jsonSessionData;
+
+        const url = session_delete_url ?? sessionDeleteUrl;
+
+        if (url) {
+          console.log('Deleting session:', sess);
+          await this.apiDeleteSession(url);
+
+          sess.jsonSessionData = jsonSessionData;
+          deletedSessions.push(sess);
+        }
+      } catch (e) {
+        console.error(e);
+        // throw new HttpException(
+        //   'Error deleting session',
+        //   HttpStatus.INTERNAL_SERVER_ERROR,
+        // );
+      }
+    }
+
+    await this.deleteSessionByIds(deletedSessions.map((v) => v.id));
+
+    return deletedSessions;
+  }
+
+  async deleteSessionByIds(ids: number[]) {
+    return this.zohoSession.updateMany({
+      where: {
+        OR: ids.map((v) => ({ id: v })),
+      },
+      data: {
+        deleted: true,
+      },
+    });
   }
 }
