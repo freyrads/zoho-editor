@@ -27,3 +27,12 @@ export interface ICallApiCreateOptions {
   isMergeTemplate?: boolean;
   createParams: ICreateDocumentParams | ICreateMergeTemplateDocumentParams;
 }
+
+export interface IEditDocumentParams {
+  userName: string;
+  documentId: string;
+  userId: string;
+  filename: string;
+
+  showFileMenu?: boolean;
+}

@@ -5,11 +5,12 @@ import {
   ICallApiCreateOptions,
   ICreateDocumentParams,
   ICreateMergeTemplateDocumentParams,
+  IEditDocumentParams,
   IZohoSessionType,
 } from './interfaces/zoho';
 import axios from 'axios';
 // import { createNewZohoDocId } from './utils';
-import { CreateDocument, CreateMergeTemplate } from './libs/zoho';
+import { CreateDocument, CreateMergeTemplate, EditDocument } from './libs/zoho';
 import FormData from 'form-data';
 import { appendApiKey, appendURLApiKey } from './utils/formDataUtils';
 
@@ -345,4 +346,33 @@ curl -X POST \
       },
     });
   }
+
+  async callApiEdit({ editParams, type }: ICallApiEditOptions) {
+    console.log({
+      editParams,
+      type,
+    });
+
+    if (type === 'sheet') {
+      return this.apiEditSpreadSheet(editParams);
+    }
+
+    return EditDocument.execute(editParams);
+  }
+
+  async apiEditSpreadSheet({
+    userName,
+    documentId,
+    userId,
+    filename,
+
+    showFileMenu,
+  }: IEditDocumentParams) {
+    // TODO
+  }
+}
+
+interface ICallApiEditOptions {
+  editParams: IEditDocumentParams;
+  type?: 'sheet' | 'writer';
 }

@@ -22,7 +22,7 @@ import {
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
-import { createNewZohoDocId } from 'src/utils';
+import { createNewZohoDocId, isValidDocType } from 'src/utils';
 
 interface IGetPreviewResponse {
   previewUrl: string;
@@ -320,6 +320,21 @@ e4c4fde28a3ebb8f2138d2/download',
     if (!savedDoc)
       throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
 
+    const docType = savedDoc.doc_type ?? 'writer';
+
+    if (!isValidDocType(docType)) {
+      console.error(
+        new Error(
+          `Invalid doc_type in document: id(${savedDoc.id}) doc_type(${docType})`,
+        ),
+      );
+
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     // const cacheId = `${savedDoc.id}/${user.id}`;
 
     // const cached = editCache.get(cacheId);
@@ -349,7 +364,7 @@ e4c4fde28a3ebb8f2138d2/download',
     );
 
     // TODO: make this a request param or something
-    const shouldCoEdit = !!existingEditSession;
+    // const shouldCoEdit = !!existingEditSession;
 
     const executeParams = {
       documentId: savedDoc.zoho_document_id,
@@ -360,11 +375,16 @@ e4c4fde28a3ebb8f2138d2/download',
     };
 
     // if not in db, create new zoho session
-    const res = await (existingEditSession && shouldCoEdit
-      ? // should be switched based on permission, or we can set different permission for the same edit/co-edit op
-        EditDocument //CoEditDocument
-      : EditDocument
-    ).execute(executeParams);
+    // const res = await (existingEditSession && shouldCoEdit
+    //   ? // should be switched based on permission, or we can set different permission for the same edit/co-edit op
+    //     EditDocument //CoEditDocument
+    //   : EditDocument
+    // ).execute(executeParams);
+
+    const res = await this.appService.callApiEdit({
+      type: docType,
+      editParams: executeParams,
+    });
 
     console.log({ res });
 

@@ -1,3 +1,5 @@
+import { IEditDocumentParams } from 'src/interfaces/zoho';
+
 const fs = require('fs');
 const StreamWrapper =
   require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
@@ -22,15 +24,6 @@ const InvaildConfigurationException =
 const V1Operations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 
-interface ICreateDocumentParams {
-  userName: string;
-  documentId: string;
-  userId: string;
-  filename: string;
-
-  showFileMenu?: boolean;
-}
-
 class EditDocument {
   static async execute({
     userName,
@@ -39,7 +32,7 @@ class EditDocument {
     filename,
 
     showFileMenu = true,
-  }: ICreateDocumentParams) {
+  }: IEditDocumentParams) {
     console.log('EDIT DOCUMENT: vvvvvvvvvvvv');
 
     console.log({

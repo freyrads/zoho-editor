@@ -3,12 +3,9 @@
 import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { createDocument } from "@/services/root";
+import { isValidDocType } from "@/utils";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-function isValidDocType(docType: any): docType is "sheet" | "writer" {
-  return ["sheet", "writer"].includes(docType);
-}
 
 export default function Create() {
   const params = useParams();
