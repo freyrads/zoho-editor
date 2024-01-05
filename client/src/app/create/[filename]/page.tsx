@@ -49,7 +49,7 @@ export default function Create() {
 
       console.log({ data });
 
-      const { documentUrl, gridview_url, document_url } = data?.data ?? {};
+      const { documentUrl, document_url } = data?.data ?? {};
 
       if (!documentUrl && !document_url) return;
 

@@ -11,6 +11,7 @@ import axios from 'axios';
 // import { createNewZohoDocId } from './utils';
 import { CreateDocument, CreateMergeTemplate } from './libs/zoho';
 import FormData from 'form-data';
+import { appendApiKey, appendURLApiKey } from './utils/formDataUtils';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -55,6 +56,14 @@ export class AppService extends PrismaClient implements OnModuleInit {
 
   async getZohoSessions() {
     return this.zohoSession.findMany();
+  }
+
+  async getZohoSessionsByZohoDocId(zoho_document_id: string) {
+    return this.zohoSession.findMany({
+      where: {
+        zoho_document_id,
+      },
+    });
   }
 
   async getDocumentById(id: number) {
@@ -150,13 +159,8 @@ curl -X POST \
     filename,
     documentId,
   }: ICreateDocumentParams) {
-    const apikey = process.env.API_KEY;
-
-    if (typeof apikey !== 'string' || !apikey.length)
-      throw new Error('Invalid API_KEY configured');
-
     const formData = new FormData();
-    formData.append('apikey', apikey);
+    appendApiKey(formData);
 
     // formData.append('editor_settings', JSON.stringify({
     //   language: 'en',
@@ -231,5 +235,9 @@ curl -X POST \
       );
 
     return CreateDocument.execute(createParams as ICreateDocumentParams);
+  }
+
+  async apiDeleteSession(url: string) {
+    return axios.delete(appendURLApiKey(url));
   }
 }

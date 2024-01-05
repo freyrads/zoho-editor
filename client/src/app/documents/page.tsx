@@ -78,6 +78,12 @@ export default function Documents() {
                   >
                     Create merge template
                   </button>
+                  <button
+                    className="btn-look"
+                    onClick={() => handleDelete(doc)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             </li>

@@ -31,7 +31,7 @@ export async function createDocument(params: ICreateDocumentParams) {
 }
 
 export async function getAllDocuments() {
-  return axios.get<IGetAllDocumentResponse>(`${API_URL}/documents`);
+  return axios.get<IGetAllDocumentResponse[]>(`${API_URL}/documents`);
 }
 
 export async function getAllSessions() {

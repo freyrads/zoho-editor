@@ -27,6 +27,8 @@ interface ICreateDocumentParams {
   documentId: string;
   userId: string;
   filename: string;
+
+  showFileMenu?: boolean;
 }
 
 class EditDocument {
@@ -35,6 +37,8 @@ class EditDocument {
     documentId,
     userId,
     filename,
+
+    showFileMenu = true,
   }: ICreateDocumentParams) {
     console.log('EDIT DOCUMENT: vvvvvvvvvvvv');
 
@@ -88,7 +92,7 @@ class EditDocument {
       const uiOptions = new UiOptions();
 
       uiOptions.setDarkMode('show');
-      uiOptions.setFileMenu('hide');
+      uiOptions.setFileMenu(showFileMenu ? 'show' : 'hide');
       uiOptions.setSaveButton('show');
       uiOptions.setChatPanel('show');
 

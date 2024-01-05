@@ -356,6 +356,7 @@ e4c4fde28a3ebb8f2138d2/download',
       userId: String(user.id),
       userName: user.name,
       filename: savedDoc.filename,
+      showFileMenu: user.id === savedDoc.author_id,
     };
 
     // if not in db, create new zoho session
@@ -615,9 +616,49 @@ POST :id/save:
       throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
     }
 
-    // TODO: find document by id first to get documentDeleteUrl
+    // find doc metadata
+    const dbDoc = await this.appService.getDocumentById(idn);
 
-    // TODO: call DELETE documentDeleteUrl zoho api
+    if (!dbDoc) {
+      throw new HttpException('Unknown document', HttpStatus.NOT_FOUND);
+    }
+
+    // find all session connected to this doc
+    const sessions =
+      typeof dbDoc.zoho_document_id === 'string'
+        ? await this.appService.getZohoSessionsByZohoDocId(
+            dbDoc.zoho_document_id,
+          )
+        : [];
+
+    let documentDeleteUrl: string;
+
+    for (const sess of sessions) {
+      try {
+        const jsonSessionData = sess.session_data.length
+          ? JSON.parse(sess.session_data)
+          : {};
+
+        // call DELETE sessionDeleteUrl zoho api
+
+        const { session_delete_url, sessionDeleteUrl } = jsonSessionData;
+
+        const url = session_delete_url ?? sessionDeleteUrl;
+
+        if (url) {
+          console.log('Deleting session:', sess);
+          await this.appService.apiDeleteSession(url);
+        }
+      } catch (e) {
+        console.error(e);
+        throw new HttpException(
+          'Error deleting session',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+
+    // call DELETE documentDeleteUrl zoho api
 
     const res = await this.appService.deleteDocumentById(idn);
 

@@ -26,6 +26,7 @@ export interface ICreateDocumentResponse {
   keyModified: {}; // ?
 
   gridview_url?: string;
+  document_url?: string;
 }
 
 export interface ICreateDocumentParams {
@@ -38,8 +39,21 @@ export interface ICreateDocumentParams {
   type?: "sheet" | "writer";
 }
 
-export type IGetAllDocumentResponse = any;
-// export interface IGetAllDocumentResponse {}
+export interface IGetAllDocumentResponse {
+  id: number;
+  title: null;
+  filename: string;
+  is_template: boolean;
+  /**
+   * JSON string
+   */
+  file_data: string; //"{\"fieldname\":\"content\",\"originalname\":\"test doc 1.zdoc\",\"encoding\":\"7bit\",\"mimetype\":\"text/plain\",\"destination\":\"./docs/\",\"filename\":\"test doc 1.zdoc\",\"path\":\"docs/test doc 1.zdoc\",\"size\":4521}",
+  zoho_document_id: string;
+  author_id: number;
+  existing: boolean;
+  deleted: boolean;
+  doc_type: "sheet" | "writer";
+}
 
 export interface IGetAllSessionResponse {
   id: number;
