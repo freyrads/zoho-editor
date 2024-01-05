@@ -384,17 +384,24 @@ e4c4fde28a3ebb8f2138d2/download',
 
     console.log({ res });
 
-    await this.appService.createZohoSession({
+    const isTypeSheet = docType === 'sheet';
+
+    const docIdKey = isTypeSheet ? 'document_id' : 'documentId';
+    const sessionIdKey = isTypeSheet ? 'session_id' : 'sessionId';
+
+    const createdEditSession = await this.appService.createZohoSession({
       data: {
         user_id: uid,
-        zoho_document_id: res.documentId,
+        zoho_document_id: res[docIdKey],
         document_id: savedDoc.id,
         session_data: JSON.stringify(res),
         session_type,
-        session_id: res.sessionId,
+        session_id: res[sessionIdKey],
         joined_session_id: existingEditSession?.id,
       },
     });
+
+    console.log({ createdEditSession });
 
     // save session to cache and db(TODO)
     // editCache.set(cacheId, res);
