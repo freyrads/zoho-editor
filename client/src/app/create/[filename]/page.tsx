@@ -49,12 +49,12 @@ export default function Create() {
 
       console.log({ data });
 
-      const { documentUrl, gridview_url } = data?.data ?? {};
+      const { documentUrl, gridview_url, document_url } = data?.data ?? {};
 
-      if (!documentUrl && !gridview_url) return;
+      if (!documentUrl && !document_url) return;
 
       setCreateResponse(data);
-      setSrc(gridview_url ?? documentUrl);
+      setSrc(document_url ?? documentUrl);
     } catch (e) {
       console.error(e);
     } finally {
