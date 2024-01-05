@@ -6,13 +6,19 @@ import { useRouter } from "next/navigation";
 export default function Preview() {
   const [filename, setFilename] = useState<string>();
   const router = useRouter();
+  const [isSheet, setIsSheet] = useState(false);
 
   const handleGo = () => {
-    router.push("/create/" + filename);
+    router.push(`/create/${filename}?type=${isSheet ? "sheet" : "writer"}`);
+  };
+
+  const toggleIsSheet = () => {
+    setIsSheet((v) => !v);
   };
 
   return (
     <div>
+      <input type="checkbox" checked={isSheet} onChange={toggleIsSheet} />
       <input
         className="btn-look"
         value={filename}

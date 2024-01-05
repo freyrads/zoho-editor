@@ -3,14 +3,19 @@
 import { Editor } from "@/components/Editor";
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { createDocument } from "@/services/root";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+function isValidDocType(docType: any): docType is "sheet" | "writer" {
+  return ["sheet", "writer"].includes(docType);
+}
 
 export default function Create() {
   const params = useParams();
+  const searchParams = useSearchParams();
 
   const [createResponse, setCreateResponse] = useState<any>();
-  const { loggedInAs, setLoggedInAs } = useLoggedInAs();
+  const { loggedInAs } = useLoggedInAs();
   console.log(loggedInAs);
   const userId = loggedInAs?.id;
 
@@ -21,17 +26,26 @@ export default function Create() {
   const filename = params.filename;
 
   const shouldCreateDoc = !!filename?.length && !!userId;
+  const docType = searchParams.get("type") ?? "writer";
 
   const execCreate = async () => {
     if (loadingRef.current) return;
 
+    if (!isValidDocType(docType)) {
+      console.error("Invalid docType", docType);
+      return;
+    }
+
     try {
       loadingRef.current = true;
 
-      const data = await createDocument({
+      const params = {
         user_id: String(userId!),
         filename: filename as string,
-      });
+        type: docType,
+      };
+
+      const data = await createDocument(params);
 
       console.log({ data });
 

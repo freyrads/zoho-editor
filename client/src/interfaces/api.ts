@@ -30,6 +30,7 @@ export interface ICreateDocumentParams {
   user_id: string;
   filename?: string;
   is_merge_template?: boolean;
+  type?: "sheet" | "writer";
 }
 
 export type IGetAllDocumentResponse = any;
