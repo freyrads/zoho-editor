@@ -144,16 +144,15 @@ curl -X POST \
 
   // SHEETS API CALLS
   async apiCreateSpreadSheet({
-    authorId,
+    userId,
     userName,
-    documentName,
-  }: IApiCreateSpreadSheetParams) {
+    filename,
+    documentId,
+  }: ICreateDocumentParams) {
     const apikey = process.env.API_KEY;
 
     if (typeof apikey !== 'string' || !apikey.length)
       throw new Error('Invalid API_KEY configured');
-
-    const documentId = createNewZohoDocId();
 
     const formData = new FormData();
     formData.append('apikey', apikey);
@@ -175,7 +174,7 @@ curl -X POST \
       JSON.stringify({
         save_url: `${process.env.SERVER_URL}/zoho/${documentId}/save`,
         save_url_params: {
-          author_id: String(authorId),
+          author_id: String(userId),
         },
       }),
     );
@@ -183,7 +182,7 @@ curl -X POST \
     formData.append(
       'document_info',
       JSON.stringify({
-        document_name: documentName,
+        document_name: filename,
         document_id: documentId,
       }),
     );
@@ -214,9 +213,7 @@ curl -X POST \
     console.log({ type, isMergeTemplate, createParams });
 
     if (type === 'sheet') {
-      return this.apiCreateSpreadSheet(
-        createParams as IApiCreateSpreadSheetParams,
-      );
+      return this.apiCreateSpreadSheet(createParams as ICreateDocumentParams);
     }
 
     if (isMergeTemplate)

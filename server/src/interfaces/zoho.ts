@@ -1,11 +1,5 @@
 export type IZohoSessionType = 'create' | 'edit'; // | 'delete' | 'preview';
 
-export interface IApiCreateSpreadSheetParams {
-  authorId: number;
-  userName: string;
-  documentName: string;
-}
-
 export interface ICreateDocumentParams {
   userName: string;
   documentId: string;
@@ -31,8 +25,5 @@ export interface ICreateMergeTemplateDocumentParams {
 export interface ICallApiCreateOptions {
   type?: 'sheet' | 'writer';
   isMergeTemplate?: boolean;
-  createParams:
-    | IApiCreateSpreadSheetParams
-    | ICreateDocumentParams
-    | ICreateMergeTemplateDocumentParams;
+  createParams: ICreateDocumentParams | ICreateMergeTemplateDocumentParams;
 }
