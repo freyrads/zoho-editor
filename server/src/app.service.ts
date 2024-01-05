@@ -2,10 +2,14 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
   IApiCreateSpreadSheetParams,
+  ICallApiCreateOptions,
+  ICreateDocumentParams,
+  ICreateMergeTemplateDocumentParams,
   IZohoSessionType,
 } from './interfaces/zoho';
 import axios from 'axios';
 import { createNewZohoDocId } from './utils';
+import { CreateDocument, CreateMergeTemplate } from './libs/zoho';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -200,5 +204,26 @@ curl -X POST \
         },
       },
     );
+  }
+
+  async callApiCreate({
+    type,
+    isMergeTemplate,
+    createParams,
+  }: ICallApiCreateOptions) {
+    console.log({ type, isMergeTemplate, createParams });
+
+    if (type === 'sheet') {
+      return this.apiCreateSpreadSheet(
+        createParams as IApiCreateSpreadSheetParams,
+      );
+    }
+
+    if (isMergeTemplate)
+      return CreateMergeTemplate.execute(
+        createParams as ICreateMergeTemplateDocumentParams,
+      );
+
+    return CreateDocument.execute(createParams as ICreateDocumentParams);
   }
 }

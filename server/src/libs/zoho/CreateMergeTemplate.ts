@@ -1,3 +1,5 @@
+import { ICreateMergeTemplateDocumentParams } from 'src/interfaces/zoho';
+
 // const fs = require('fs');
 const StreamWrapper =
   require('zoi-nodejs-sdk/utils/util/stream_wrapper').StreamWrapper;
@@ -22,21 +24,6 @@ const InvaildConfigurationException =
 const OfficeIntegratorSDKOperations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
 // import { Readable } from 'stream';
-
-interface ICreateMergeTemplateDocumentParams {
-  userName: string;
-  documentId: string;
-  userId: string;
-  filename: string;
-  /*
-   * JSON string
-   */
-  // mergeContent: string;
-  // mergeContentName: string;
-  newFilename: string;
-  inTemplateFolder?: boolean;
-  // mergeFilename: string;
-}
 
 class CreateMergeTemplate {
   static async execute({

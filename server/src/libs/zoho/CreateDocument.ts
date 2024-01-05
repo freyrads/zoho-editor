@@ -1,3 +1,5 @@
+import { ICreateDocumentParams } from 'src/interfaces/zoho';
+
 const Margin =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin').Margin;
 const UserInfo =
@@ -20,13 +22,6 @@ const InvaildConfigurationException =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception').InvaildConfigurationException;
 const OfficeIntegratorSDKOperations =
   require('zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations').V1Operations;
-
-interface ICreateDocumentParams {
-  userName: string;
-  documentId: string;
-  userId: string;
-  filename: string;
-}
 
 class CreateDocument {
   static async execute({

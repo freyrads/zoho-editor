@@ -16,11 +16,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
 import {
-  CreateDocument,
   PreviewDocument,
   EditDocument,
   // CoEditDocument,
-  CreateMergeTemplate,
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
@@ -48,26 +46,6 @@ interface IGetCreateResponse {
 
 // const previewCache = new Map<string, IGetPreviewResponse>();
 // const editCache = new Map<string, IGetEditResponse>();
-
-interface ICallApiCreateOptions {
-  type?: 'sheet' | 'writer';
-  isMergeTemplate?: boolean;
-  createParams: any;
-}
-
-async function callApiCreate({
-  type,
-  isMergeTemplate,
-  createParams,
-}: ICallApiCreateOptions) {
-  if (type === 'sheet') {
-    return;
-  }
-
-  if (isMergeTemplate) return CreateMergeTemplate.execute(createParams);
-
-  return CreateDocument.execute(createParams);
-}
 
 @Controller('zoho')
 export class ZohoController {
@@ -224,7 +202,11 @@ export class ZohoController {
     //     filename,
     //   };
 
-    const res: IGetCreateResponse = await callApiCreate({ isMergeTemplate });
+    const res: IGetCreateResponse = await this.appService.callApiCreate({
+      type,
+      isMergeTemplate,
+      createParams,
+    });
 
     console.log({ res });
 
