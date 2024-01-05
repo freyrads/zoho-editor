@@ -481,6 +481,7 @@ POST :id/save:
           filename: content.filename,
           existing: false, //body.existing,
           author_id: user.id,
+          doc_type: body.doc_type ?? 'writer',
         },
       });
 
@@ -498,6 +499,7 @@ POST :id/save:
         file_data: JSON.stringify(content),
         // zoho_document_id: params.id,
         filename: content.filename,
+        doc_type: body.doc_type ?? 'writer',
       },
     });
 

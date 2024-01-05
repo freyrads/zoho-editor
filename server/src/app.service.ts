@@ -219,6 +219,7 @@ curl -X POST \
         save_url: `${process.env.SERVER_URL}/zoho/${documentId}/save`,
         save_url_params: {
           author_id: String(userId),
+          doc_type: 'sheet',
         },
       }),
     );
