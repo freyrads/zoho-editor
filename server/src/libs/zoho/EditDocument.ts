@@ -88,8 +88,8 @@ class EditDocument {
       const uiOptions = new UiOptions();
 
       uiOptions.setDarkMode('show');
-      uiOptions.setFileMenu('show');
-      uiOptions.setSaveButton('show');
+      uiOptions.setFileMenu('hide');
+      uiOptions.setSaveButton('hide');
       uiOptions.setChatPanel('show');
 
       createDocumentParameters.setUiOptions(uiOptions);
