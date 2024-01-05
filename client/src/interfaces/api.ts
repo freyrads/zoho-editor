@@ -24,6 +24,8 @@ export interface ICreateDocumentResponse {
   sessionDeleteUrl: string;
   documentDeleteUrl: string;
   keyModified: {}; // ?
+
+  gridviewUrl?: string;
 }
 
 export interface ICreateDocumentParams {

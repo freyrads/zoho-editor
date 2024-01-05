@@ -24,10 +24,7 @@ import {
 } from 'src/libs/zoho';
 import * as express from 'express';
 import { IZohoSessionType } from 'src/interfaces/zoho';
-
-function createNewZohoDocId() {
-  return '' + new Date().getTime();
-}
+import { createNewZohoDocId } from 'src/utils';
 
 interface IGetPreviewResponse {
   previewUrl: string;

@@ -11,3 +11,7 @@ export function createRandomUserName() {
 
   return userName;
 }
+
+export function createNewZohoDocId() {
+  return '' + new Date().getTime();
+}
