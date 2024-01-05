@@ -202,11 +202,17 @@ export class ZohoController {
     //     filename,
     //   };
 
-    const res: IGetCreateResponse = await this.appService.callApiCreate({
-      type,
-      isMergeTemplate,
-      createParams,
-    });
+    let res: IGetCreateResponse;
+    try {
+      res = await this.appService.callApiCreate({
+        type,
+        isMergeTemplate,
+        createParams,
+      });
+    } catch (e) {
+      console.error(e);
+      return;
+    }
 
     console.log({ res });
 
