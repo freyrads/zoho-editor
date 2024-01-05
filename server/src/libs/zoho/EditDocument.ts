@@ -89,7 +89,7 @@ class EditDocument {
 
       uiOptions.setDarkMode('show');
       uiOptions.setFileMenu('hide');
-      uiOptions.setSaveButton('hide');
+      uiOptions.setSaveButton('show');
       uiOptions.setChatPanel('show');
 
       createDocumentParameters.setUiOptions(uiOptions);
