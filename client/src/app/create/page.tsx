@@ -17,16 +17,27 @@ export default function Preview() {
   };
 
   return (
-    <div>
-      <input type="checkbox" checked={isSheet} onChange={toggleIsSheet} />
-      <input
-        className="btn-look"
-        value={filename}
-        onChange={(e) => setFilename(e.target.value)}
-      />
-      <button className="btn-look" onClick={handleGo}>
-        Go Create
-      </button>
+    <div className="flex flex-col">
+      <div className="flex">
+        <label htmlFor="spreadsheet">Spreadsheet:</label>
+        <input
+          id="spreadsheet"
+          type="checkbox"
+          checked={isSheet}
+          onChange={toggleIsSheet}
+        />
+      </div>
+
+      <div className="flex">
+        <input
+          className="btn-look"
+          value={filename}
+          onChange={(e) => setFilename(e.target.value)}
+        />
+        <button className="btn-look" onClick={handleGo}>
+          Go Create
+        </button>
+      </div>
     </div>
   );
 }
