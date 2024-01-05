@@ -187,9 +187,9 @@ curl -X POST \
   -F 'editor_settings={'\''language'\'':'\''en'\'','\''country'\'':'\''IN'\''}' \
   -F 'permissions={'\''document.export'\'':true,'\''document.print'\'':true,'\''document.edit'\'':true}' \
   -F 'callback_settings={'\''save_format'\'':'\''zsheet'\'','\''save_url'\'':'\''https://zylker.com/save.php/'\''}' \
-  -F 'document_info={'\''document_name'\'':'\''New'\'', '\''document_id'\'':1349}' \
+  -F 'document_info={'\''document_name'\'':'\''Sample'\'', '\''document_id'\'':1349}' \
   -F 'user_info={'\''display_name'\'':'\''Ken'\''}' \
-  -F 'ui_options'={'\''save_button'\'':'\''hide'\''}' 
+  -F 'ui_options={'\''save_button'\'':'\''show'\''}' 
     */
 
   // SHEETS API CALLS
@@ -354,21 +354,94 @@ curl -X POST \
     });
 
     if (type === 'sheet') {
-      return this.apiEditSpreadSheet(editParams);
+      const editSheetRes = await this.apiEditSpreadSheet(editParams);
+
+      console.log({ editSheetRes });
+
+      return editSheetRes?.data;
     }
 
     return EditDocument.execute(editParams);
   }
 
+  /*
+curl -X POST \
+  https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F apikey=423s***** \
+  -F 'editor_settings={'\''language'\'':'\''en'\'','\''country'\'':'\''IN'\''}' \
+  -F 'permissions={'\''document.export'\'':true,'\''document.print'\'':true,'\''document.edit'\'':true}' \
+  -F 'callback_settings={'\''save_format'\'':'\''zsheet'\'','\''save_url'\'':'\''https://zylker.com/save.php/'\''}' \
+  -F 'document_info={'\''document_name'\'':'\''Sample'\'', '\''document_id'\'':1349}' \
+  -F 'user_info={'\''display_name'\'':'\''Ken'\''}' \
+  -F 'ui_options={'\''save_button'\'':'\''hide'\''}' 
+    */
+
   async apiEditSpreadSheet({
     userName,
     documentId,
     userId,
-    filename,
-
-    showFileMenu,
+    filename, // showFileMenu,
   }: IEditDocumentParams) {
-    // TODO
+    return this.apiCreateSpreadSheet({
+      userName,
+      documentId,
+      userId,
+      filename, // showFileMenu,
+    });
+    const formData = new FormData();
+    appendApiKey(formData);
+
+    // formData.append('editor_settings', JSON.stringify({
+    //   language: 'en',
+    //   country: '',
+    // }));
+
+    formData.append(
+      'permissions',
+      JSON.stringify({
+        'document.edit': true,
+      }),
+    );
+
+    formData.append(
+      'callback_settings',
+      JSON.stringify({
+        save_url: `${process.env.SERVER_URL}/zoho/${documentId}/save`,
+        save_url_params: {
+          author_id: String(userId),
+          doc_type: 'sheet',
+        },
+      }),
+    );
+
+    formData.append(
+      'document_info',
+      JSON.stringify({
+        document_name: filename,
+        document_id: documentId,
+      }),
+    );
+
+    formData.append(
+      'user_info',
+      JSON.stringify({
+        display_name: userName,
+      }),
+    );
+
+    console.log({ formData });
+
+    return axios.post(
+      `https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
   }
 }
 

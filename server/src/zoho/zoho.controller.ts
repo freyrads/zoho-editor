@@ -287,10 +287,6 @@ e4c4fde28a3ebb8f2138d2/download',
     response.json(res);
   }
 
-  // @Get('edit')
-  // async getCreate(@Param() params: any): Promise<> {
-  // }
-
   @Get('edit')
   async getEdit(
     @Query('user_id') user_id: string,
