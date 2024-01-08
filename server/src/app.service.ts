@@ -339,7 +339,7 @@ curl -X POST \
       jsonSessionData: any;
     })[] = [];
 
-    if (!deletedSessions.length) return [];
+    if (!sessions.length) return [];
 
     for (const sess of sessions as typeof deletedSessions) {
       try {
