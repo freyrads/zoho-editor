@@ -40,8 +40,10 @@ export default function MergeTemplate() {
   };
 
   const execMerge = async () => {
+    const json = JSON.parse(jsonData);
+
     const res = await postZohoMergeTemplate({
-      merge_data: jsonData,
+      merge_data: JSON.stringify(json),
       merge_filename: filename,
       document_id: String(id),
       author_id: String(userId),

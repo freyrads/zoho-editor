@@ -81,8 +81,6 @@ interface IGetCreateResponse {
 // const previewCache = new Map<string, IGetPreviewResponse>();
 // const editCache = new Map<string, IGetEditResponse>();
 
-const ameliaStr = JSON.stringify(amelia);
-
 @Controller('zoho')
 export class ZohoController {
   constructor(private readonly appService: AppService) {}
@@ -781,7 +779,7 @@ POST :id/save:
 
     const res = await this.appService.apiMergeTemplateWithData({
       filename: baseDocument.filename,
-      mergeData: ameliaStr,
+      mergeData: merge_data,
     });
 
     console.log('res:');
@@ -795,7 +793,7 @@ POST :id/save:
         filename: mergeFilename,
         existing: false,
         author_id: user.id,
-        file_data: JSON.stringify({ mergeFilename, mergeData: ameliaStr }),
+        file_data: JSON.stringify({ mergeFilename, mergeData: merge_data }),
       },
     });
 
