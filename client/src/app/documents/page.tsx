@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllDocuments } from "@/services/root";
+import { getAllDocuments, postDeleteDocument } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { IDoc } from "@/interfaces/api";
@@ -45,8 +45,19 @@ export default function Documents() {
     router.push(`/edit/${doc.id}`);
   };
 
+  const execDelete = async (id: number) => {
+    if (typeof userId !== "number") return;
+    const deleteRes = await postDeleteDocument({
+      user_id: String(userId),
+      document_id: id,
+    });
+
+    console.log({ deleteRes });
+  };
+
   const handleDelete = (doc: IDoc) => {
     console.log({ doc });
+    execDelete(doc.id);
   };
 
   const handleMergeWithData = (doc: IDoc) => {
