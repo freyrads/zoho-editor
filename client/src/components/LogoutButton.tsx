@@ -9,17 +9,19 @@ export default function LogoutButton() {
 
   console.log({ loggedInAs });
 
-  if (!loggedInAs) return null;
-
   const handleLogout = () => {
     setLoggedInAs();
     router.push("/");
   };
 
   return (
-    <div className="absolute left-0 top-0 pl-[10px] pt-[10px]">
+    <div
+      className={`${
+        !loggedInAs?.name?.length ? "hidden" : ""
+      } absolute left-0 top-0 pl-[10px] pt-[10px]`}
+    >
       <button className="btn-look gap-[10px]" onClick={handleLogout}>
-        <span>{loggedInAs.name}</span>
+        <span>{loggedInAs?.name}</span>
         <span>Log out button</span>
       </button>
     </div>
