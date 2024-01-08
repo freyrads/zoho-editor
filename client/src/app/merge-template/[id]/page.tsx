@@ -70,7 +70,7 @@ export default function MergeTemplate() {
       <div>
         <h1>JSON Data:</h1>
         <textarea
-          className="w-full"
+          className="w-full min-h-[600px]"
           value={jsonData}
           onChange={handleJsonChange}
         />
