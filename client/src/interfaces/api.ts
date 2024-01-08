@@ -84,3 +84,16 @@ export interface IPostZohoMergeTemplateData {
   merge_data: string;
   author_id: string;
 }
+
+export interface IDoc {
+  id: number;
+  title: null;
+  filename: string;
+  is_template: boolean;
+  file_data: string;
+  zoho_document_id: string;
+  author_id: number;
+  existing: boolean;
+  deleted: boolean;
+  doc_type: string;
+}

@@ -3,19 +3,7 @@
 import { getAllDocuments } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-interface IDoc {
-  id: number;
-  title: null;
-  filename: string;
-  is_template: boolean;
-  file_data: string;
-  zoho_document_id: string;
-  author_id: number;
-  existing: boolean;
-  deleted: boolean;
-  doc_type: string;
-}
+import { IDoc } from "@/interfaces/api";
 
 export default function Documents() {
   const router = useRouter();

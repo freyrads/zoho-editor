@@ -2,10 +2,11 @@
 
 import useLoggedInAs from "@/hooks/useLoggedInAs";
 import { getMergeJsonSample, postZohoMergeTemplate } from "@/services/root";
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function MergeTemplate() {
+  const router = useRouter();
   const params = useParams();
   const [jsonData, setJsonData] = useState("");
   const [filename, setFilename] = useState("");
@@ -50,6 +51,9 @@ export default function MergeTemplate() {
     });
 
     console.log({ res });
+    if (res.status === 201) {
+      router.push("/documents");
+    }
   };
 
   const handleGo = () => {
