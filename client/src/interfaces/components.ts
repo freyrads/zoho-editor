@@ -10,4 +10,5 @@ export interface ILinkMapProps {
 export interface IEditorProps {
   data?: any;
   src?: string;
+  id?: string;
 }
