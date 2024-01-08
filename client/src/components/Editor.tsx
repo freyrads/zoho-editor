@@ -1,11 +1,18 @@
+"use client";
+
 import { IEditorProps } from "@/interfaces/components";
 import { inspect } from "util";
 import Script from "next/script";
+import { useEffect } from "react";
 
 export function Editor({ data, src, id }: Readonly<IEditorProps>) {
   // min-w-screen max-w-screen is not working
   //
   const editorId = `zoho-editor-${id}`;
+
+  useEffect(() => {
+    console.log({ xdc: (window as any).XDC });
+  }, []);
 
   return (
     <main className="flex min-h-screen max-h-screen min-w-[100vw] max-w-[100vw] overflow-auto flex-col items-center">
