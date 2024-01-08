@@ -18,7 +18,7 @@ export default function MergeTemplate() {
   const getJsonData = async () => {
     const res = await getMergeJsonSample();
 
-    setJsonData(JSON.stringify(res, null, 2));
+    setJsonData(JSON.stringify(res.data, null, 2));
   };
 
   useEffect(() => {
@@ -69,7 +69,11 @@ export default function MergeTemplate() {
     <div>
       <div>
         <h1>JSON Data:</h1>
-        <textarea value={jsonData} onChange={handleJsonChange} />
+        <textarea
+          className="w-full"
+          value={jsonData}
+          onChange={handleJsonChange}
+        />
       </div>
 
       <input
