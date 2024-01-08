@@ -18,6 +18,7 @@ export interface IBaseEditorSaveButtonOptions {
   forceSave?: boolean;
   format?: string;
   onSaveError?: (data?: any) => void;
+  isSheet?: false;
 }
 
 interface IEditorSaveButtonRequiredUrlParamsOptions
@@ -31,8 +32,15 @@ interface IEditorSaveButtonHiddenOptions extends IBaseEditorSaveButtonOptions {
   hide: true;
 }
 
+interface IEditorSaveButtonForSheetOptions {
+  hide?: boolean;
+  onSaveError?: (data?: any) => void;
+  isSheet: true;
+}
+
 export type IEditorSaveButtonOptions =
   | IEditorSaveButtonRequiredUrlParamsOptions
+  | IEditorSaveButtonForSheetOptions
   | IEditorSaveButtonHiddenOptions;
 
 export interface IEditorProps {
@@ -40,4 +48,5 @@ export interface IEditorProps {
   src?: string;
   id?: string;
   saveButtonOptions?: IEditorSaveButtonOptions;
+  isSheet?: boolean;
 }

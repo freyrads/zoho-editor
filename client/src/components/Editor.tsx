@@ -8,7 +8,7 @@ export function Editor({
   data,
   src,
   id,
-  saveButtonOptions = { hide: false },
+  saveButtonOptions = { hide: true },
 }: Readonly<IEditorProps>) {
   // min-w-screen max-w-screen is not working
   //
@@ -32,7 +32,22 @@ export function Editor({
   const handleSaveManually = () => {
     if (hideSaveManuallyButton || !(window as any).XDC) return;
 
-    const { hideSaveButton, forceSave, saveUrlParams, format, onSaveError } =
+    const { onSaveError, isSheet } = saveButtonOptions;
+
+    if (isSheet) {
+      (window as any).XDC.postMessage({
+        message: "SaveSpreadsheet",
+        // Use "SaveSpreadsheetResponse" event for oncomplete
+        onexception: function (data: any) {
+          // Handle exception
+          console.error({ data });
+          onSaveError?.(data);
+        },
+      });
+      return;
+    }
+
+    const { hideSaveButton, forceSave, saveUrlParams, format } =
       saveButtonOptions;
 
     (window as any).XDC.postMessage({
