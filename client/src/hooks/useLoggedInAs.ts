@@ -4,12 +4,39 @@ import { useEffect, useState } from "react";
 let currentValue: IGetUsersResponse | undefined;
 const setters: ((newVal?: IGetUsersResponse) => void)[] = [];
 
+const checkLogoutButton = (shouldShow: boolean) => {
+  if (typeof document !== "undefined") {
+    const el = document.getElementById("logout-btn-container");
+
+    if (!el) return;
+
+    const isHidden = el.classList.contains("hidden");
+
+    if (shouldShow) {
+      if (isHidden) {
+        el.classList.remove("hidden");
+      }
+
+      return;
+    }
+
+    if (!isHidden) {
+      el.classList.add("hidden");
+    }
+  }
+};
+
 const setSetLoggedInAs = (newVal?: IGetUsersResponse) => {
   currentValue = newVal;
 
-  if (newVal) localStorage.setItem("user", JSON.stringify(newVal));
-  else localStorage.removeItem("user");
+  if (newVal) {
+    checkLogoutButton(true);
+    localStorage.setItem("user", JSON.stringify(newVal));
+  } else {
+    checkLogoutButton(false);
 
+    localStorage.removeItem("user");
+  }
   for (const set of setters) {
     set(newVal ? { ...newVal } : newVal);
   }
