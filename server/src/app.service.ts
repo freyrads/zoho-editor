@@ -217,7 +217,7 @@ curl --location --request POST "https://api.office-integrator.com/writer/officea
         headers: {
           ...formData.getHeaders(),
         },
-        responseType: 'blob',
+        responseType: 'stream',
       },
     );
   }

@@ -23,7 +23,7 @@ import * as express from 'express';
 import { IPostMergeTemplateBody, IZohoSessionType } from 'src/interfaces/zoho';
 import { createNewZohoDocId, isValidDocType } from 'src/utils';
 // import amelia from '../../amelia.json';
-import { writeFileSync } from 'fs';
+import { createWriteStream, writeFileSync } from 'fs';
 
 interface IGetPreviewResponse {
   previewUrl: string;
@@ -717,7 +717,7 @@ POST :id/save:
   // }
 
   @Post('merge-template')
-  async postMergeTemplate(@Body() body: IPostMergeTemplateBody) {
+  async postMergeTemplate(@Body() body: IPostMergeTemplateBody): Promise<any> {
     console.log(body);
 
     if (typeof body !== 'object')
@@ -783,24 +783,31 @@ POST :id/save:
     });
 
     console.log('res:');
-    console.log(res);
+    // console.log(res);
     // console.log(res.data);
 
-    writeFileSync(`${process.env.DOCUMENT_FOLDER}/${mergeFilename}`, res.data);
+    return new Promise(async (r, j) => {
+      const savePath = `${process.env.DOCUMENT_FOLDER}/${mergeFilename}`;
 
-    const createdDoc = await this.appService.createDocument({
-      data: {
-        filename: mergeFilename,
-        existing: false,
-        author_id: user.id,
-        file_data: JSON.stringify({ mergeFilename, mergeData: merge_data }),
-      },
+      const stream = res.data.pipe(createWriteStream(savePath));
+
+      stream.on('finish', async () => {
+        const createdDoc = await this.appService.createDocument({
+          data: {
+            filename: mergeFilename,
+            existing: false,
+            author_id: user.id,
+            file_data: JSON.stringify({ mergeFilename, mergeData: merge_data }),
+          },
+        });
+
+        console.log({ createdDoc });
+
+        r(createdDoc);
+      });
+
+      stream.on('error', (e: any) => j(e));
     });
-
-    console.log({ createdDoc });
-
-    return createdDoc;
-
     // const createParams = {};
 
     // let res: IGetCreateResponse;
