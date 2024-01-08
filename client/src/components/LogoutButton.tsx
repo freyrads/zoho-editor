@@ -18,8 +18,9 @@ export default function LogoutButton() {
 
   return (
     <div className="absolute left-0 top-0 pl-[10px] pt-[10px]">
-      <button className="btn-look" onClick={handleLogout}>
-        Log out button
+      <button className="btn-look gap-[10px]" onClick={handleLogout}>
+        <span>{loggedInAs.name}</span>
+        <span>Log out button</span>
       </button>
     </div>
   );
