@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/assets/scss/globals.scss";
 import Providers from "./providers";
 import LogoutButton from "@/components/LogoutButton";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,7 @@ export default function RootLayout({
 
           <LogoutButton />
         </Providers>
-        <script type="text/javascript" src="/xdc-1.0.min.js"></script>
+        <Script src="/xdc-1.0.min.js"></Script>
       </body>
     </html>
   );
