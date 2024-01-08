@@ -60,3 +60,7 @@ export async function editDocument(params: IEditDocumentParams) {
 export async function postZohoMergeTemplate(data: IPostZohoMergeTemplateData) {
   return axios.post<void>(`${API_URL}/zoho/merge-template`, data);
 }
+
+export async function getMergeJsonSample() {
+  return axios.get<object>(`${API_URL}/merge-json-example`);
+}
