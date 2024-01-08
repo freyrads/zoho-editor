@@ -38,8 +38,10 @@ const setSetLoggedInAs = (newVal?: IGetUsersResponse) => {
 
   if (newVal) {
     localStorage.setItem("user", JSON.stringify(newVal));
+    checkLogoutButton(true);
   } else {
     localStorage.removeItem("user");
+    checkLogoutButton(false);
   }
 
   for (const set of setters) {
