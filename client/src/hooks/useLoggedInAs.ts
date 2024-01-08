@@ -5,24 +5,28 @@ let currentValue: IGetUsersResponse | undefined;
 const setters: ((newVal?: IGetUsersResponse) => void)[] = [];
 
 const checkLogoutButton = (shouldShow: boolean) => {
-  if (typeof document !== "undefined") {
-    const el = document.getElementById("logout-btn-container");
+  console.log({ shouldShow });
 
-    if (!el) return;
+  if (typeof document === "undefined") return;
 
-    const isHidden = el.classList.contains("hidden");
+  const el = document.getElementById("logout-btn-container");
 
-    if (shouldShow) {
-      if (isHidden) {
-        el.classList.remove("hidden");
-      }
+  console.log({ el });
 
-      return;
+  if (!el) return;
+
+  const isHidden = el.classList.contains("hidden");
+
+  if (shouldShow) {
+    if (isHidden) {
+      el.classList.remove("hidden");
     }
 
-    if (!isHidden) {
-      el.classList.add("hidden");
-    }
+    return;
+  }
+
+  if (!isHidden) {
+    el.classList.add("hidden");
   }
 };
 
