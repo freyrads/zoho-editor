@@ -4,9 +4,13 @@ import { getAllDocuments } from "@/services/root";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { IDoc } from "@/interfaces/api";
+import useLoggedInAs from "@/hooks/useLoggedInAs";
 
 export default function Documents() {
   const router = useRouter();
+  const { loggedInAs } = useLoggedInAs();
+  console.log({ loggedInAs });
+  const userId = loggedInAs?.id;
 
   const { data } = useQuery({
     queryFn: getAllDocuments,
@@ -85,12 +89,14 @@ export default function Documents() {
                   >
                     Create merge template
                   </button>
-                  <button
-                    className="btn-look"
-                    onClick={() => handleDelete(doc)}
-                  >
-                    Delete
-                  </button>
+                  {typeof userId === "number" && doc.author_id === userId && (
+                    <button
+                      className="btn-look"
+                      onClick={() => handleDelete(doc)}
+                    >
+                      Delete
+                    </button>
+                  )}
                   {doc.is_template && (
                     <button
                       className="btn-look"

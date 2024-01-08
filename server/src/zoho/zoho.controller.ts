@@ -15,15 +15,11 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
-import {
-  PreviewDocument,
-  // CoEditDocument,
-} from 'src/libs/zoho';
+import { PreviewDocument } from 'src/libs/zoho';
 import * as express from 'express';
 import { IPostMergeTemplateBody, IZohoSessionType } from 'src/interfaces/zoho';
 import { createNewZohoDocId, isValidDocType } from 'src/utils';
-// import amelia from '../../amelia.json';
-import { createWriteStream, writeFileSync } from 'fs';
+import { createWriteStream } from 'fs';
 
 interface IGetPreviewResponse {
   previewUrl: string;

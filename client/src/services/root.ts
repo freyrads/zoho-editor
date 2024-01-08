@@ -2,6 +2,7 @@ import { API_URL } from "@/config";
 import {
   ICreateDocumentParams,
   ICreateDocumentResponse,
+  IDoc,
   IEditDocumentParams,
   IEditDocumentResponse,
   IGetAllDocumentResponse,
@@ -63,4 +64,20 @@ export async function postZohoMergeTemplate(data: IPostZohoMergeTemplateData) {
 
 export async function getMergeJsonSample() {
   return axios.get<object>(`${API_URL}/merge-json-example`);
+}
+
+export async function postDeleteDocument({
+  document_id,
+  user_id,
+}: {
+  document_id: number;
+  user_id: string;
+}) {
+  return axios.post<{
+    deletedDocument: IDoc[];
+    deletedDocumentURLs: string[];
+    deletedSessions: any;
+  }>(`${API_URL}/zoho/documents/${document_id}/delete`, {
+    user_id,
+  });
 }
