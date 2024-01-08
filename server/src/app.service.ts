@@ -360,7 +360,9 @@ curl -X POST \
 
         if (url) {
           console.log('Deleting session:', sess);
-          await this.apiDeleteSession(url);
+          const resDeleteSession = await this.apiDeleteSession(url);
+
+          console.log({ resDeleteSession });
 
           sess.jsonSessionData = jsonSessionData;
           deletedSessions.push(sess);

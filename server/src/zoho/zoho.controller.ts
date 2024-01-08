@@ -632,7 +632,10 @@ POST :id/save:
   }
 
   @Post('documents/:id/delete')
-  async postDocumentDelete(@Param('id') id: string) {
+  async postDocumentDelete(
+    @Param('id') id: string,
+    @Body('user_id') user_id: string,
+  ) {
     console.log('POST documents/:id/delete: VVVVVVVVVVVVVVVVVVVV');
     console.log({ id });
 
@@ -642,11 +645,27 @@ POST :id/save:
       throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
     }
 
+    const uid = user_id?.length ? parseInt(user_id) : NaN;
+    if (Number.isNaN(uid)) {
+      console.error({ user_id });
+      throw new HttpException('Invalid user_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.appService.getUserById(uid);
+    if (!user) {
+      console.error({ user });
+      throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
+    }
+
     // find doc metadata
     const dbDoc = await this.appService.getDocumentById(idn);
 
     if (!dbDoc) {
       throw new HttpException('Unknown document', HttpStatus.NOT_FOUND);
+    }
+
+    if (user.id !== dbDoc.author_id) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
     // find all session connected to this doc and delete
@@ -675,7 +694,8 @@ POST :id/save:
     // call DELETE documentDeleteUrl zoho api
     for (const url of documentDeleteURLs) {
       console.log('Deleting zoho document:', url);
-      await this.appService.apiDeleteDocument(url);
+      const resDeleteDoc = await this.appService.apiDeleteDocument(url);
+      console.log({ resDeleteDoc });
       deletedDocumentURLs.push(url);
     }
 
