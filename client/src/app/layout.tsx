@@ -27,7 +27,7 @@ export default function RootLayout({
 
           <LogoutButton />
         </Providers>
-        <Script src="/xdc-1.0.min.js"></Script>
+        <Script src="https://js.zohocdn.com/officeplatform/v1/js/common/xdc-1.0.min.js"></Script>
       </body>
     </html>
   );
