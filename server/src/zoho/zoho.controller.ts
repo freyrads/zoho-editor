@@ -681,7 +681,7 @@ POST :id/save:
       const currentDocumentDeleteUrl = document_delete_url ?? documentDeleteUrl;
 
       // set documentDeleteUrl
-      if (documentDeleteURLs.includes(currentDocumentDeleteUrl)) {
+      if (!documentDeleteURLs.includes(currentDocumentDeleteUrl)) {
         documentDeleteURLs.push(currentDocumentDeleteUrl);
       }
     }
