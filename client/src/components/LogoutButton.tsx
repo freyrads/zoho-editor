@@ -7,7 +7,7 @@ export default function LogoutButton() {
   const { loggedInAs, setLoggedInAs } = useLoggedInAs();
   const router = useRouter();
 
-  console.log({ loggedInAs });
+  console.log({ loggedInAsLogoutButton: loggedInAs });
 
   const handleLogout = () => {
     setLoggedInAs();

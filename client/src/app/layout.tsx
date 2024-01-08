@@ -21,8 +21,11 @@ export default function RootLayout({
       <body
         className={`${inter.className} overflow-auto flex min-h-screen min-w-screen justify-center flex-col items-center gap-[20px]`}
       >
-        <Providers>{children}</Providers>
-        <LogoutButton />
+        <Providers>
+          {children}
+
+          <LogoutButton />
+        </Providers>
       </body>
     </html>
   );
