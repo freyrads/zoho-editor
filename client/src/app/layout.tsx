@@ -26,6 +26,7 @@ export default function RootLayout({
 
           <LogoutButton />
         </Providers>
+        <script type="text/javascript" src="/xdc-1.0.min.js"></script>
       </body>
     </html>
   );

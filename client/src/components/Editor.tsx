@@ -34,7 +34,6 @@ export function Editor({ data, src, id }: Readonly<IEditorProps>) {
           }}
           src={src}
         ></iframe>
-        <script type="text/javascript" src="/xdc-1.0.min.js"></script>
       </div>
     </main>
   );
