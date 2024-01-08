@@ -67,5 +67,18 @@ export default function Create() {
 
   if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
-  return <Editor data={createResponse?.data} src={src} />;
+  if (!isValidDocType(docType)) return <h1>Invalid type</h1>;
+
+  return (
+    <Editor
+      data={createResponse?.data}
+      src={src}
+      saveButtonOptions={{
+        saveUrlParams: {
+          author_id: String(userId),
+          doc_type: docType,
+        },
+      }}
+    />
+  );
 }

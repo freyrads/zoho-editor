@@ -65,5 +65,17 @@ export default function CreateMergeTemplate() {
 
   if (!shouldCreateDoc) return <div>No filename provided or not logged in</div>;
 
-  return <Editor data={createResponse?.data} src={src} />;
+  return (
+    <Editor
+      data={createResponse?.data}
+      src={src}
+      saveButtonOptions={{
+        saveUrlParams: {
+          author_id: String(userId),
+          doc_type: "writer",
+          is_merge_template: "1",
+        },
+      }}
+    />
+  );
 }

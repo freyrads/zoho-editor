@@ -37,5 +37,13 @@ export default function PreviewFile() {
   if (!shouldPreviewDoc)
     return <div>No filename provided or not logged in</div>;
 
-  return <Editor data={data?.data} src={previewSrc} />;
+  return (
+    <Editor
+      data={data?.data}
+      src={previewSrc}
+      saveButtonOptions={{
+        hide: true as const,
+      }}
+    />
+  );
 }

@@ -8,11 +8,13 @@ export function Editor({
   data,
   src,
   id,
-  saveButtonOptions = {},
+  saveButtonOptions = { hide: false },
 }: Readonly<IEditorProps>) {
   // min-w-screen max-w-screen is not working
   //
   const editorId = `zoho-editor-${id}`;
+
+  const hideSaveManuallyButton = saveButtonOptions.hide;
 
   useEffect(() => {
     const xdc = (window as any).XDC;
@@ -28,7 +30,7 @@ export function Editor({
   }, []);
 
   const handleSaveManually = () => {
-    if ((window as any).XDC) return;
+    if (hideSaveManuallyButton || !(window as any).XDC) return;
 
     const { hideSaveButton, forceSave, saveUrlParams, format, onSaveError } =
       saveButtonOptions;
@@ -54,9 +56,11 @@ export function Editor({
     <main className="flex min-h-screen max-h-screen min-w-[100vw] max-w-[100vw] overflow-auto flex-col items-center">
       <div className="break-all">{data ? inspect(data) : "Loading..."}</div>
       <div>
-        <button className="btn-look" onClick={handleSaveManually}>
-          Save Manually
-        </button>
+        {!hideSaveManuallyButton && (
+          <button className="btn-look" onClick={handleSaveManually}>
+            Save Manually
+          </button>
+        )}
       </div>
       <div className="flex w-full">
         <iframe

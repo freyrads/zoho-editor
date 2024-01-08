@@ -10,6 +10,7 @@ export default function Edit() {
   const params = useParams();
 
   const [createResponse, setCreateResponse] = useState<any>();
+  const [isSheet, setIsSheet] = useState(false);
   const { loggedInAs } = useLoggedInAs();
   console.log(loggedInAs);
   const userId = loggedInAs?.id;
@@ -41,6 +42,7 @@ export default function Edit() {
 
       setCreateResponse(data);
       setSrc(document_url ?? documentUrl);
+      setIsSheet(!!document_url?.length);
     } catch (e) {
       console.error(e);
     } finally {
@@ -56,5 +58,16 @@ export default function Edit() {
 
   if (!shouldEditDoc) return <div>No filename provided or not logged in</div>;
 
-  return <Editor data={createResponse?.data} src={src} />;
+  return (
+    <Editor
+      data={createResponse?.data}
+      src={src}
+      saveButtonOptions={{
+        saveUrlParams: {
+          author_id: String(userId),
+          doc_type: isSheet ? "sheet" : "writer",
+        },
+      }}
+    />
+  );
 }
