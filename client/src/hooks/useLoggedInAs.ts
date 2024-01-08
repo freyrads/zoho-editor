@@ -34,13 +34,11 @@ const setSetLoggedInAs = (newVal?: IGetUsersResponse) => {
   currentValue = newVal;
 
   if (newVal) {
-    checkLogoutButton(true);
     localStorage.setItem("user", JSON.stringify(newVal));
   } else {
-    checkLogoutButton(false);
-
     localStorage.removeItem("user");
   }
+
   for (const set of setters) {
     set(newVal ? { ...newVal } : newVal);
   }
@@ -62,12 +60,18 @@ const removeSetter: typeof addSetter = (setter) => {
 };
 
 const checkValue = () => {
-  if (currentValue) return;
+  if (currentValue) {
+    return;
+  }
 
   const lUser = localStorage.getItem("user");
-  if (!lUser) return;
+  if (!lUser) {
+    checkLogoutButton(false);
+    return;
+  }
 
   currentValue = JSON.parse(lUser);
+  checkLogoutButton(true);
 
   return currentValue;
 };
