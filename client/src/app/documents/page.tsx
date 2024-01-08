@@ -88,7 +88,7 @@ export default function Documents() {
                   >
                     Delete
                   </button>
-                  {doc.is_merge_template && (
+                  {doc.is_template && (
                     <button
                       className="btn-look"
                       onClick={() => handleMergeWithData(doc)}
