@@ -26,7 +26,7 @@ export function Editor({ data, src, id }: Readonly<IEditorProps>) {
       console.log({XDC});
       XDC.setTarget({
         "origin": "https://api.office-integrator.com",
-        "window": document.getElementById("updateIframe").contentWindow
+        "window": document.getElementById("${editorId}").contentWindow
       });
     `}
         </Script>
