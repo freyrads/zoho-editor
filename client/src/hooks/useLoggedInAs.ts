@@ -61,6 +61,7 @@ const removeSetter: typeof addSetter = (setter) => {
 
 const checkValue = () => {
   if (currentValue) {
+    checkLogoutButton(true);
     return;
   }
 
