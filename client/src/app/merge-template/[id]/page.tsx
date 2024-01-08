@@ -5,7 +5,7 @@ import { getMergeJsonSample, postZohoMergeTemplate } from "@/services/root";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function MergeTemplate() {
+export default function MergeTemplate() {
   const params = useParams();
   const [jsonData, setJsonData] = useState("");
   const [filename, setFilename] = useState("");
