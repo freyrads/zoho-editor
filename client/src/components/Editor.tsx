@@ -2,7 +2,6 @@
 
 import { IEditorProps } from "@/interfaces/components";
 import { inspect } from "util";
-import Script from "next/script";
 import { useEffect } from "react";
 
 export function Editor({ data, src, id }: Readonly<IEditorProps>) {
@@ -11,7 +10,16 @@ export function Editor({ data, src, id }: Readonly<IEditorProps>) {
   const editorId = `zoho-editor-${id}`;
 
   useEffect(() => {
-    console.log({ xdc: (window as any).XDC });
+    const xdc = (window as any).XDC;
+    console.log({ xdc });
+
+    if (!xdc) return;
+    const iFrame = document.getElementById(editorId) as HTMLIFrameElement;
+
+    (window as any).XDC.setTarget({
+      origin: "https://api.office-integrator.com",
+      window: iFrame?.contentWindow,
+    });
   }, []);
 
   return (
@@ -27,16 +35,6 @@ export function Editor({ data, src, id }: Readonly<IEditorProps>) {
           }}
           src={src}
         ></iframe>
-
-        <Script>
-          {`
-      console.log({XDC});
-      XDC.setTarget({
-        "origin": "https://api.office-integrator.com",
-        "window": document.getElementById("${editorId}").contentWindow
-      });
-    `}
-        </Script>
       </div>
     </main>
   );
