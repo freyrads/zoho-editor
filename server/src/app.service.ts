@@ -204,6 +204,7 @@ curl --location --request POST "https://api.office-integrator.com/writer/officea
     formData.append(
       'file_content',
       readFileSync(`${process.env.DOCUMENT_FOLDER}/${filename}`),
+      filename,
     );
     formData.append('merge_data', mergeData);
 
@@ -215,7 +216,6 @@ curl --location --request POST "https://api.office-integrator.com/writer/officea
       {
         headers: {
           ...formData.getHeaders(),
-          'Content-Type': 'multipart/form-data',
         },
       },
     );
