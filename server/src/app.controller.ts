@@ -19,6 +19,9 @@ import {
 } from '@prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import amelia from '../amelia.json';
+
+console.log({ amelia });
 
 @Controller()
 export class AppController {
@@ -136,5 +139,10 @@ export class AppController {
     console.log({ createdDoc });
 
     return createdDoc;
+  }
+
+  @Get('merge-json-example')
+  getMergeJsonExample(): typeof amelia {
+    return amelia;
   }
 }

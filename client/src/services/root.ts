@@ -9,6 +9,7 @@ import {
   IGetDocumentParams,
   IGetDocumentResponse,
   IGetUsersResponse,
+  IPostZohoMergeTemplateData,
 } from "@/interfaces/api";
 import axios from "axios";
 
@@ -54,4 +55,8 @@ export async function editDocument(params: IEditDocumentParams) {
   return axios.get<IEditDocumentResponse>(`${API_URL}/zoho/edit`, {
     params,
   });
+}
+
+export async function postZohoMergeTemplate(data: IPostZohoMergeTemplateData) {
+  return axios.post<void>(`${API_URL}/zoho/merge-template`, data);
 }

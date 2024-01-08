@@ -77,3 +77,10 @@ export interface IEditDocumentParams {
 }
 
 export type IEditDocumentResponse = any;
+
+export interface IPostZohoMergeTemplateData {
+  merge_filename: string;
+  document_id: string;
+  merge_data: string;
+  author_id: string;
+}

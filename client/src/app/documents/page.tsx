@@ -44,6 +44,10 @@ export default function Documents() {
     console.log({ doc });
   };
 
+  const handleMergeWithData = (doc: any) => {
+    console.log(doc);
+  };
+
   return (
     <div className="flex flex-col gap-[12px]">
       <h1>Documents List</h1>
@@ -84,6 +88,14 @@ export default function Documents() {
                   >
                     Delete
                   </button>
+                  {doc.is_merge_template && (
+                    <button
+                      className="btn-look"
+                      onClick={() => handleMergeWithData(doc)}
+                    >
+                      Merge with data
+                    </button>
+                  )}
                 </div>
               </div>
             </li>

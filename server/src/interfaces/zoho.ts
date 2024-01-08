@@ -36,3 +36,23 @@ export interface IEditDocumentParams {
 
   showFileMenu?: boolean;
 }
+
+export interface IApiMergeTemplateWithDataParams {
+  filename: string;
+  /*
+   * JSON string
+   */
+  mergeData: string;
+}
+
+export interface IPostMergeTemplateBody {
+  merge_filename: string;
+  document_id: string;
+  merge_data: string;
+  author_id: string;
+}
+
+export interface ICallApiEditOptions {
+  editParams: IEditDocumentParams;
+  type?: 'sheet' | 'writer';
+}

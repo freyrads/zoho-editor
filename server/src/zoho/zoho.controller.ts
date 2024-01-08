@@ -17,12 +17,12 @@ import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
 import {
   PreviewDocument,
-  EditDocument,
   // CoEditDocument,
 } from 'src/libs/zoho';
 import * as express from 'express';
-import { IZohoSessionType } from 'src/interfaces/zoho';
+import { IPostMergeTemplateBody, IZohoSessionType } from 'src/interfaces/zoho';
 import { createNewZohoDocId, isValidDocType } from 'src/utils';
+import amelia from '../../amelia.json';
 
 interface IGetPreviewResponse {
   previewUrl: string;
@@ -714,4 +714,102 @@ POST :id/save:
 
   //   return res;
   // }
+
+  @Post('merge-template')
+  async postMergeTemplate(@Body() body: IPostMergeTemplateBody): Promise<void> {
+    console.log(body);
+
+    if (typeof body !== 'object')
+      throw new HttpException('Invalid POST data', HttpStatus.BAD_REQUEST);
+
+    const { merge_filename, document_id, merge_data, author_id } = body;
+
+    if (typeof merge_filename !== 'string' || !merge_filename.length) {
+      throw new HttpException('Invalid merge_filename', HttpStatus.BAD_REQUEST);
+    }
+
+    if (typeof merge_data !== 'object') {
+      throw new HttpException('Invalid merge_data', HttpStatus.BAD_REQUEST);
+    }
+
+    const uid = author_id?.length ? parseInt(author_id) : NaN;
+    if (Number.isNaN(uid)) {
+      console.error({ author_id });
+      throw new HttpException('Invalid author_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.appService.getUserById(uid);
+    if (!user) {
+      console.error({ user });
+      throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
+    }
+
+    const mergeDocumentId = document_id?.length ? parseInt(document_id) : NaN;
+
+    if (Number.isNaN(mergeDocumentId)) {
+      console.error({ document_id: mergeDocumentId });
+      throw new HttpException('Invalid document_id', HttpStatus.BAD_REQUEST);
+    }
+
+    const baseDocument = await this.appService.getDocumentById(mergeDocumentId);
+
+    if (!baseDocument) {
+      console.error({ baseDocument });
+      throw new HttpException(
+        'Invalid merge_document_id',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const oriFname = merge_filename;
+    const mergeFilename = decodeURIComponent(merge_filename);
+
+    console.log({ merge_filename: oriFname, sanitizedFilename: mergeFilename });
+
+    const res = await this.appService.apiMergeTemplateWithData({
+      filename: baseDocument.filename,
+      mergeData: JSON.stringify(amelia),
+    });
+
+    console.log('res:');
+    console.log(res);
+
+    // const createParams = {};
+
+    // let res: IGetCreateResponse;
+    // try {
+    //   // res = await this.appService.callApiCreate({
+    //   //   type,
+    //   //   isMergeTemplate,
+    //   //   createParams,
+    //   // });
+    // } catch (e) {
+    //   console.error(e);
+    //   return;
+    // }
+
+    // sheet res
+
+    // console.log({ res });
+
+    // const session_type: IZohoSessionType = 'create';
+
+    // const docIdKey = isTypeSheet ? 'document_id' : 'documentId';
+    // const sessionIdKey = isTypeSheet ? 'session_id' : 'sessionId';
+
+    // save to db
+    // const createdSession = await this.appService.createZohoSession({
+    //   data: {
+    //     user_id: uid,
+    //     zoho_document_id: res[docIdKey],
+    //     session_data: JSON.stringify(res),
+    //     session_type,
+    //     session_id: res[sessionIdKey],
+    //   },
+    // });
+
+    // console.log({ createdSession });
+
+    // response.json(res);
+  }
 }

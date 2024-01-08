@@ -1,18 +1,19 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
-  // IApiCreateSpreadSheetParams,
+  IApiMergeTemplateWithDataParams,
   ICallApiCreateOptions,
+  ICallApiEditOptions,
   ICreateDocumentParams,
   ICreateMergeTemplateDocumentParams,
   IEditDocumentParams,
   IZohoSessionType,
 } from './interfaces/zoho';
 import axios from 'axios';
-// import { createNewZohoDocId } from './utils';
 import { CreateDocument, CreateMergeTemplate, EditDocument } from './libs/zoho';
 import FormData from 'form-data';
 import { appendApiKey, appendURLApiKey } from './utils/formDataUtils';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -179,7 +180,55 @@ export class AppService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  /*
+  async apiMergeTemplateWithData({
+    filename,
+    mergeData,
+  }: IApiMergeTemplateWithDataParams) {
+    /*
+curl --location --request POST "https://api.office-integrator.com/writer/officeapi/v1/document/merge" \
+  --form "apikey=423s******" \
+  --form "output_format=pdf" \
+  --form "password=***" \
+  --form "file_content=@" \
+  --form "merge_data={\"data\":[{\"name\":\"Amelia\",\"email\":\"amelia@zylker.com\"}]}"
+      */
+    const formData = new FormData();
+    appendApiKey(formData);
+
+    // formData.append('editor_settings', JSON.stringify({
+    //   language: 'en',
+    //   country: '',
+    // }));
+
+    formData.append('output_format', 'docx');
+    formData.append(
+      'file_content',
+      readFileSync(`${process.env.DOCUMENT_FOLDER}/${filename}`),
+    );
+    formData.append('merge_data', mergeData);
+
+    console.log({ formData });
+
+    return axios.post(
+      `https://api.office-integrator.com/writer/officeapi/v1/document/merge`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+  }
+
+  // SHEETS API CALLS
+  async apiCreateSpreadSheet({
+    userId,
+    userName,
+    filename,
+    documentId,
+  }: ICreateDocumentParams) {
+    /*
 curl -X POST \
   https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
@@ -192,13 +241,6 @@ curl -X POST \
   -F 'ui_options={'\''save_button'\'':'\''show'\''}' 
     */
 
-  // SHEETS API CALLS
-  async apiCreateSpreadSheet({
-    userId,
-    userName,
-    filename,
-    documentId,
-  }: ICreateDocumentParams) {
     const formData = new FormData();
     appendApiKey(formData);
 
@@ -389,63 +431,5 @@ curl -X POST \
       userId,
       filename, // showFileMenu,
     });
-    const formData = new FormData();
-    appendApiKey(formData);
-
-    // formData.append('editor_settings', JSON.stringify({
-    //   language: 'en',
-    //   country: '',
-    // }));
-
-    formData.append(
-      'permissions',
-      JSON.stringify({
-        'document.edit': true,
-      }),
-    );
-
-    formData.append(
-      'callback_settings',
-      JSON.stringify({
-        save_url: `${process.env.SERVER_URL}/zoho/${documentId}/save`,
-        save_url_params: {
-          author_id: String(userId),
-          doc_type: 'sheet',
-        },
-      }),
-    );
-
-    formData.append(
-      'document_info',
-      JSON.stringify({
-        document_name: filename,
-        document_id: documentId,
-      }),
-    );
-
-    formData.append(
-      'user_info',
-      JSON.stringify({
-        display_name: userName,
-      }),
-    );
-
-    console.log({ formData });
-
-    return axios.post(
-      `https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet`,
-      formData,
-      {
-        headers: {
-          ...formData.getHeaders(),
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    );
   }
-}
-
-interface ICallApiEditOptions {
-  editParams: IEditDocumentParams;
-  type?: 'sheet' | 'writer';
 }
