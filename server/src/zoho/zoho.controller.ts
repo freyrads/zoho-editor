@@ -731,7 +731,14 @@ POST :id/save:
       throw new HttpException('Invalid merge_filename', HttpStatus.BAD_REQUEST);
     }
 
-    if (typeof merge_data !== 'object') {
+    if (typeof merge_data !== 'string') {
+      throw new HttpException('Invalid merge_data', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      JSON.parse(merge_data);
+    } catch (e) {
+      console.error(e);
       throw new HttpException('Invalid merge_data', HttpStatus.BAD_REQUEST);
     }
 
