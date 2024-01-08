@@ -10,16 +10,18 @@ const checkLogoutButton = (shouldShow: boolean) => {
   if (typeof document === "undefined") return;
 
   const el = document.getElementById("logout-btn-container");
+  const elBtn = document.getElementById("logout-btn");
 
-  console.log({ el });
+  console.log({ el, elBtn });
 
-  if (!el) return;
+  if (!el || !elBtn) return;
 
   const isHidden = el.classList.contains("hidden");
 
   if (shouldShow) {
     if (isHidden) {
       el.classList.remove("hidden");
+      elBtn.textContent = `${currentValue?.name} | Log out`;
     }
 
     return;
@@ -27,6 +29,7 @@ const checkLogoutButton = (shouldShow: boolean) => {
 
   if (!isHidden) {
     el.classList.add("hidden");
+    elBtn.textContent = `Log out`;
   }
 };
 
