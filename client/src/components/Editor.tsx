@@ -162,7 +162,7 @@ export function Editor({
         handleSavedEvent(data, { type: "writer" });
       },
     );
-  }, [saveButtonOptions]);
+  }, []);
 
   const handleSaveManually = () => {
     if (hideSaveManuallyButton) return;
