@@ -13,8 +13,8 @@ export function Editor({
 }: Readonly<IEditorProps>) {
   // min-w-screen max-w-screen is not working
   //
-  const [autosaveTimeout, setAutosaveTimeout] = useState(0);
-  const autosaveTimeoutRef = useRef(0);
+  const [autosaveTimeout, setAutosaveTimeout] = useState(30);
+  const autosaveTimeoutRef = useRef(30);
   const shouldAutosaveRef = useRef(false);
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
