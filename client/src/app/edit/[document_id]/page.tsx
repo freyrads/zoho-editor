@@ -9,8 +9,9 @@ import { useEffect, useRef, useState } from "react";
 export default function Edit() {
   const params = useParams();
 
+  const [error, setError] = useState(false);
   const [createResponse, setCreateResponse] = useState<any>();
-  const [isSheet, setIsSheet] = useState(false);
+  const [isSheet, setIsSheet] = useState<boolean>();
   const { loggedInAs } = useLoggedInAs();
   console.log(loggedInAs);
   const userId = loggedInAs?.id;
@@ -38,7 +39,10 @@ export default function Edit() {
 
       const { documentUrl, document_url } = data?.data ?? {};
 
-      if (!documentUrl && !document_url) return;
+      if (!documentUrl && !document_url) {
+        setError(true);
+        return;
+      }
 
       setCreateResponse(data);
       setSrc(document_url ?? documentUrl);
@@ -57,6 +61,11 @@ export default function Edit() {
   }, [shouldEditDoc]);
 
   if (!shouldEditDoc) return <div>No filename provided or not logged in</div>;
+
+  if (error) return <h1>Error. Check console</h1>;
+
+  if (typeof src !== "string" || typeof isSheet !== "boolean")
+    return <h1>Loading</h1>;
 
   return (
     <Editor
