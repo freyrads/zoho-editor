@@ -28,6 +28,7 @@ export function Editor({
     const { onSaveError, isSheet } = saveButtonOptions;
 
     if (isSheet) {
+      console.log({ savingIsSheet: saveButtonOptions });
       (window as any).XDC.postMessage({
         message: "SaveSpreadsheet",
         // Use "SaveSpreadsheetResponse" event for oncomplete
@@ -42,6 +43,8 @@ export function Editor({
 
     const { hideSaveButton, forceSave /*saveUrlParams, format*/ } =
       saveButtonOptions;
+
+    console.log({ savingIsWriter: saveButtonOptions });
 
     (window as any).XDC.postMessage({
       message: "SaveDocument",
@@ -125,7 +128,7 @@ export function Editor({
       window: iFrame?.contentWindow,
     });
 
-    const { isSheet } = saveButtonOptions;
+    // const { isSheet } = saveButtonOptions;
 
     console.log({ saveButtonOptions });
 
