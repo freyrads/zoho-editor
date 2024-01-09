@@ -20,7 +20,7 @@ export function Editor({
 
   const editorId = `zoho-editor-${id}`;
 
-  const hideSaveManuallyButton = saveButtonOptions.hide;
+  const { isSheet, hide: hideSaveManuallyButton } = saveButtonOptions;
 
   const saveDocument = () => {
     if (!(window as any).XDC) return;
@@ -125,8 +125,6 @@ export function Editor({
       window: iFrame?.contentWindow,
     });
 
-    const { isSheet } = saveButtonOptions;
-
     if (isSheet) {
       (window as any).XDC.receiveMessage(
         "SpreadsheetModified",
@@ -162,7 +160,7 @@ export function Editor({
         handleSavedEvent(data, { type: "writer" });
       },
     );
-  }, [saveButtonOptions]);
+  }, [isSheet]);
 
   const handleSaveManually = () => {
     if (hideSaveManuallyButton) return;
