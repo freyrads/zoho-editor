@@ -14,6 +14,7 @@ export function Editor({
   // min-w-screen max-w-screen is not working
   //
   const [autosaveTimeout, setAutosaveTimeout] = useState(0);
+  const autosaveTimeoutRef = useRef(0);
   const shouldAutosaveRef = useRef(false);
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -74,9 +75,11 @@ export function Editor({
       autosaveTimerRef.current = null;
     }
 
-    if (autosaveTimeout <= 0) return autosaveTimerEnd();
+    if (autosaveTimeoutRef.current <= 0) return autosaveTimerEnd();
 
-    setAutosaveTimeout((v) => --v);
+    autosaveTimeoutRef.current--;
+    setAutosaveTimeout(autosaveTimeoutRef.current);
+
     autosaveTimerRef.current = setTimeout(updateAutosaveSecondTimer, 1000);
   };
 
@@ -86,7 +89,8 @@ export function Editor({
       autosaveTimerRef.current = null;
     }
 
-    setAutosaveTimeout(30);
+    autosaveTimeoutRef.current = 30;
+    setAutosaveTimeout(autosaveTimeoutRef.current);
     autosaveTimerRef.current = setTimeout(updateAutosaveSecondTimer, 1000);
 
     shouldAutosaveRef.current = true;
