@@ -29,6 +29,8 @@ export interface ICreateDocumentResponse {
   document_url?: string;
 }
 
+export type IDocType = "sheet" | "writer";
+
 export interface ICreateDocumentParams {
   user_id: string;
   filename?: string;
@@ -36,7 +38,7 @@ export interface ICreateDocumentParams {
   is_merge_template?: boolean;
   merge_document_id?: number;
 
-  type?: "sheet" | "writer";
+  type?: IDocType;
 }
 
 export interface IGetAllDocumentResponse {
@@ -52,7 +54,7 @@ export interface IGetAllDocumentResponse {
   author_id: number;
   existing: boolean;
   deleted: boolean;
-  doc_type: "sheet" | "writer";
+  doc_type: IDocType;
 }
 
 export interface IGetAllSessionResponse {

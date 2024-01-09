@@ -9,6 +9,7 @@ export function Editor({
   src,
   id,
   saveButtonOptions = { hide: true },
+  onSave,
 }: Readonly<IEditorProps>) {
   // min-w-screen max-w-screen is not working
   //
@@ -27,6 +28,22 @@ export function Editor({
       origin: "https://api.office-integrator.com",
       window: iFrame?.contentWindow,
     });
+
+    (window as any).XDC.receiveMessage(
+      "SaveDocumentResponse",
+      function (data: any) {
+        console.log({ SaveDocumentResponse: data });
+        onSave?.(data, { type: "writer" });
+      },
+    );
+
+    (window as any).XDC.receiveMessage(
+      "SaveSpreadsheetResponse",
+      function (data: any) {
+        console.log({ SaveSpreadsheetResponse: data });
+        onSave?.(data, { type: "sheet" });
+      },
+    );
   }, []);
 
   const handleSaveManually = () => {
@@ -53,8 +70,9 @@ export function Editor({
     (window as any).XDC.postMessage({
       message: "SaveDocument",
       data: {
-        hideSaveButton: hideSaveButton ?? false, // Default value will be true
-        forceSave: forceSave ?? true, // Default value will be true
+        hideSaveButton:
+          typeof hideSaveButton === "boolean" ? hideSaveButton : false, // Default value will be true
+        forceSave: typeof forceSave === "boolean" ? forceSave : true, // Default value will be true
         saveUrlParams: saveUrlParams,
         format: format,
       },

@@ -74,6 +74,7 @@ export default function Create() {
       data={createResponse?.data}
       src={src}
       saveButtonOptions={{
+        isSheet: docType === "sheet",
         saveUrlParams: {
           author_id: String(userId),
           doc_type: docType,

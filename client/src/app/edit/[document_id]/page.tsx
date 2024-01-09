@@ -63,6 +63,7 @@ export default function Edit() {
       data={createResponse?.data}
       src={src}
       saveButtonOptions={{
+        isSheet,
         saveUrlParams: {
           author_id: String(userId),
           doc_type: isSheet ? "sheet" : "writer",

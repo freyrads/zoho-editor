@@ -1,3 +1,5 @@
+import { IDocType } from "./api";
+
 export interface ILinkMapEntry {
   href: string;
   desc: string;
@@ -9,7 +11,7 @@ export interface ILinkMapProps {
 
 export interface IEditorSaveButtonSaveUrlParams {
   author_id: string;
-  doc_type?: "sheet" | "writer";
+  doc_type?: IDocType;
   is_merge_template?: "1";
 }
 
@@ -29,7 +31,7 @@ interface IEditorSaveButtonRequiredUrlParamsOptions
 
 interface IEditorSaveButtonHiddenOptions extends IBaseEditorSaveButtonOptions {
   saveUrlParams?: IEditorSaveButtonSaveUrlParams;
-  hide: true;
+  hide?: true;
 }
 
 interface IEditorSaveButtonForSheetOptions {
@@ -43,10 +45,15 @@ export type IEditorSaveButtonOptions =
   | IEditorSaveButtonForSheetOptions
   | IEditorSaveButtonHiddenOptions;
 
+export interface IEditorOnSaveInfo {
+  type: IDocType;
+}
+
 export interface IEditorProps {
   data?: any;
   src?: string;
   id?: string;
   saveButtonOptions?: IEditorSaveButtonOptions;
   isSheet?: boolean;
+  onSave?: (data: any, info: IEditorOnSaveInfo) => void;
 }
