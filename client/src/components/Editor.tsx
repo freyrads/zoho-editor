@@ -1,6 +1,6 @@
 "use client";
 
-import { IEditorProps } from "@/interfaces/components";
+import { IEditorOnSaveInfo, IEditorProps } from "@/interfaces/components";
 import { inspect } from "util";
 import { useEffect, useRef, useState } from "react";
 
@@ -65,8 +65,6 @@ export function Editor({
     if (!shouldAutosaveRef.current) return;
 
     saveDocument();
-
-    shouldAutosaveRef.current = false;
   };
 
   const updateAutosaveSecondTimer = () => {
@@ -101,6 +99,20 @@ export function Editor({
     shouldAutosaveRef.current = true;
   };
 
+  const handleSavedEvent = (data: any, info: IEditorOnSaveInfo) => {
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current);
+      autosaveTimerRef.current = null;
+    }
+
+    autosaveTimeoutRef.current = 30;
+    setAutosaveTimeout(autosaveTimeoutRef.current);
+
+    shouldAutosaveRef.current = false;
+
+    onSave?.(data, info);
+  };
+
   useEffect(() => {
     const xdc = (window as any).XDC;
     console.log({ xdc });
@@ -112,14 +124,6 @@ export function Editor({
       origin: "https://api.office-integrator.com",
       window: iFrame?.contentWindow,
     });
-
-    (window as any).XDC.receiveMessage(
-      "SaveSpreadsheetResponse",
-      function (data: any) {
-        console.log({ SaveSpreadsheetResponse: data });
-        onSave?.(data, { type: "sheet" });
-      },
-    );
 
     const { isSheet } = saveButtonOptions;
 
@@ -136,7 +140,7 @@ export function Editor({
         "SaveSpreadsheetResponse",
         function (data: any) {
           console.log({ SaveSpreadsheetResponse: data });
-          onSave?.(data, { type: "sheet" });
+          handleSavedEvent(data, { type: "sheet" });
         },
       );
 
@@ -155,7 +159,7 @@ export function Editor({
       "SaveDocumentResponse",
       function (data: any) {
         console.log({ SaveDocumentResponse: data });
-        onSave?.(data, { type: "writer" });
+        handleSavedEvent(data, { type: "writer" });
       },
     );
   }, []);
