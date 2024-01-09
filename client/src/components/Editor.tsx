@@ -127,6 +127,8 @@ export function Editor({
 
     const { isSheet } = saveButtonOptions;
 
+    console.log({ saveButtonOptions });
+
     if (isSheet) {
       (window as any).XDC.receiveMessage(
         "SpreadsheetModified",
