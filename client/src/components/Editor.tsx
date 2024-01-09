@@ -171,7 +171,8 @@ export function Editor({
       <div className="break-all">{data ? inspect(data) : "Loading..."}</div>
       <div className="flex justify-center items-center gap-[20px]">
         <div className="flex justify-center items-center">
-          Saving automatically in: {autosaveTimeout} second.
+          Saving automatically in:{" "}
+          {shouldAutosaveRef.current ? autosaveTimeout : 0} second.
         </div>
         {!hideSaveManuallyButton && (
           <button className="btn-look" onClick={handleSaveManually}>
