@@ -94,7 +94,7 @@ export default function Documents() {
                   <button className="btn-look" onClick={() => handleEdit(doc)}>
                     edit
                   </button>
-                  {doc.doc_type === "sheet" && (
+                  {doc.doc_type !== "sheet" && (
                     <button
                       className="btn-look"
                       onClick={() => handleCreateMergeTemplate(doc)}
