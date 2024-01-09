@@ -29,6 +29,7 @@ export function Editor({
 
     if (isSheet) {
       console.log({ savingIsSheet: saveButtonOptions });
+
       (window as any).XDC.postMessage({
         message: "SaveSpreadsheet",
         // Use "SaveSpreadsheetResponse" event for oncomplete
@@ -38,6 +39,7 @@ export function Editor({
           onSaveError?.(data);
         },
       });
+
       return;
     }
 
