@@ -94,12 +94,14 @@ export default function Documents() {
                   <button className="btn-look" onClick={() => handleEdit(doc)}>
                     edit
                   </button>
-                  <button
-                    className="btn-look"
-                    onClick={() => handleCreateMergeTemplate(doc)}
-                  >
-                    Create merge template
-                  </button>
+                  {doc.doc_type === "sheet" && (
+                    <button
+                      className="btn-look"
+                      onClick={() => handleCreateMergeTemplate(doc)}
+                    >
+                      Create merge template
+                    </button>
+                  )}
                   {typeof userId === "number" && doc.author_id === userId && (
                     <button
                       className="btn-look"
@@ -108,7 +110,7 @@ export default function Documents() {
                       Delete
                     </button>
                   )}
-                  {doc.doc_type === "sheet" && doc.is_template && (
+                  {doc.is_template && (
                     <button
                       className="btn-look"
                       onClick={() => handleMergeWithData(doc)}
