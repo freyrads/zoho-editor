@@ -129,25 +129,25 @@ export function Editor({
 
     console.log({ saveButtonOptions });
 
-    if (isSheet) {
-      (window as any).XDC.receiveMessage(
-        "SpreadsheetModified",
-        function (data: any) {
-          console.log({ SpreadsheetModified: data });
-          triggerAutosaveCountdown();
-        },
-      );
+    // if (isSheet) {
+    (window as any).XDC.receiveMessage(
+      "SpreadsheetModified",
+      function (data: any) {
+        console.log({ SpreadsheetModified: data });
+        triggerAutosaveCountdown();
+      },
+    );
 
-      (window as any).XDC.receiveMessage(
-        "SaveSpreadsheetResponse",
-        function (data: any) {
-          console.log({ SaveSpreadsheetResponse: data });
-          handleSavedEvent(data, { type: "sheet" });
-        },
-      );
+    (window as any).XDC.receiveMessage(
+      "SaveSpreadsheetResponse",
+      function (data: any) {
+        console.log({ SaveSpreadsheetResponse: data });
+        handleSavedEvent(data, { type: "sheet" });
+      },
+    );
 
-      return;
-    }
+    // return;
+    // }
 
     (window as any).XDC.receiveMessage(
       "DocumentModified",
