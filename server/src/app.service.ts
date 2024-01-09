@@ -2,15 +2,22 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
   IApiMergeTemplateWithDataParams,
+  IApiPreviewSpreadSheetParams,
   ICallApiCreateOptions,
   ICallApiEditOptions,
+  ICallApiPreviewParams,
   ICreateDocumentParams,
   ICreateMergeTemplateDocumentParams,
   IEditDocumentParams,
   IZohoSessionType,
 } from './interfaces/zoho';
 import axios from 'axios';
-import { CreateDocument, CreateMergeTemplate, EditDocument } from './libs/zoho';
+import {
+  CreateDocument,
+  CreateMergeTemplate,
+  EditDocument,
+  PreviewDocument,
+} from './libs/zoho';
 import FormData from 'form-data';
 import { appendApiKey, appendURLApiKey } from './utils/formDataUtils';
 import { readFileSync } from 'fs';
@@ -297,6 +304,48 @@ curl -X POST \
     );
   }
 
+  async apiPreviewSpreadSheet({ filename }: IApiPreviewSpreadSheetParams) {
+    /*
+curl --request POST \
+  --url 'https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet/preview' \
+  --header 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  --form document=@/Users/username/Spreadsheet/Sample.xlsx \
+  --form 'apikey=423s*****' \
+  --form language=en
+  */
+
+    const formData = new FormData();
+    appendApiKey(formData);
+
+    formData.append(
+      'document',
+      readFileSync(`${process.env.DOCUMENT_FOLDER}/${filename}`),
+      filename,
+    );
+
+    formData.append('language', 'en');
+    // formData.append(
+    //   'permissions',
+    //   JSON.stringify({
+    //     'document.export': true,
+    //     'document.print': true,
+    //   }),
+    // );
+
+    console.log({ formData });
+
+    return axios.post(
+      `https://api.office-integrator.com/sheet/officeapi/v1/spreadsheet/preview`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+  }
+
   async callApiCreate({
     type,
     isMergeTemplate,
@@ -319,6 +368,15 @@ curl -X POST \
       );
 
     return CreateDocument.execute(createParams as ICreateDocumentParams);
+  }
+
+  async callApiPreview({ type, previewParams }: ICallApiPreviewParams) {
+    if (type === 'sheet') {
+      const res = await this.apiPreviewSpreadSheet(previewParams);
+      console.log({ res });
+      return res.data;
+    }
+    return PreviewDocument.execute(previewParams);
   }
 
   async apiDeleteSession(url: string) {

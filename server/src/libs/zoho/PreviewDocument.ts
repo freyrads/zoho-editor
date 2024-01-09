@@ -15,10 +15,10 @@ const V1Operations =
 class PreviewDocument {
   static async execute({
     filename,
-    document_id,
-  }: {
+  } // document_id,
+  : {
     filename: string;
-    document_id?: string | null;
+    // document_id?: string | null;
   }) {
     console.log('PREVIEW DOCUMENT: vvvvvvvvvvvv');
 

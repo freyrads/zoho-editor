@@ -25,11 +25,11 @@ export default function PreviewFile() {
   });
 
   useEffect(() => {
-    const { previewUrl } = data?.data ?? {};
+    const { previewUrl, preview_url } = data?.data ?? {};
 
-    if (!previewUrl) return;
+    if (!previewUrl && !preview_url) return;
 
-    setPreviewSrc(previewUrl);
+    setPreviewSrc(preview_url ?? previewUrl);
   }, [data]);
 
   console.log({ data, ...restQuery });

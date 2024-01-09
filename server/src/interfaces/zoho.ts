@@ -56,3 +56,14 @@ export interface ICallApiEditOptions {
   editParams: IEditDocumentParams;
   type?: 'sheet' | 'writer';
 }
+
+export interface IApiPreviewSpreadSheetParams {
+  filename: string;
+}
+
+export interface ICallApiPreviewParams {
+  previewParams: {
+    filename: string;
+  };
+  type: 'sheet' | 'writer';
+}

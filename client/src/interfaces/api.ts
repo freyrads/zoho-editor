@@ -10,6 +10,8 @@ export interface IGetDocumentResponse {
   sessionDeleteUrl: string;
   documentDeleteUrl: string;
   keyModified: {}; //?
+
+  preview_url?: string;
 }
 
 export interface IGetDocumentParams {

@@ -15,7 +15,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AppService } from 'src/app.service';
-import { PreviewDocument } from 'src/libs/zoho';
 import * as express from 'express';
 import { IPostMergeTemplateBody, IZohoSessionType } from 'src/interfaces/zoho';
 import { createNewZohoDocId, isValidDocType } from 'src/utils';
@@ -106,10 +105,21 @@ export class ZohoController {
       throw new HttpException('Unknown Document', HttpStatus.NOT_FOUND);
     }
 
-    // if not in db, create new zoho session
-    const res = await PreviewDocument.execute({
+    if (!isValidDocType(savedDoc.doc_type)) {
+      throw new HttpException(
+        'Invalid doc_type',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const execParams = {
       filename: savedDoc.filename,
-      document_id: savedDoc.zoho_document_id,
+    };
+
+    // if not in db, create new zoho session
+    const res = await this.appService.callApiPreview({
+      type: savedDoc.doc_type,
+      previewParams: execParams,
     });
     console.log({ res });
 
