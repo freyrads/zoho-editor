@@ -75,6 +75,11 @@ export function Editor({
       autosaveTimerRef.current = null;
     }
 
+    console.log({
+      currentSec: autosaveTimeoutRef.current,
+      shouldSave: shouldAutosaveRef.current,
+    });
+
     if (autosaveTimeoutRef.current <= 0) return autosaveTimerEnd();
 
     autosaveTimeoutRef.current--;
