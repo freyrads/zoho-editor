@@ -160,8 +160,10 @@ export function Editor({
   return (
     <main className="flex min-h-screen max-h-screen min-w-[100vw] max-w-[100vw] overflow-auto flex-col items-center">
       <div className="break-all">{data ? inspect(data) : "Loading..."}</div>
-      <div className="flex gap-[20px]">
-        <div>Saving automatically in: {autosaveTimeout} second.</div>
+      <div className="flex justify-center items-center gap-[20px]">
+        <div className="flex justify-center items-center">
+          Saving automatically in: {autosaveTimeout} second.
+        </div>
         {!hideSaveManuallyButton && (
           <button className="btn-look" onClick={handleSaveManually}>
             Save Manually
